@@ -3,42 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta VIP</title>
+    <title>Cheers O Bar - Roleta Final</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
 
         * { cursor: none !important; user-select: none; outline: none !important; }
         html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
 
-        /* FUNDO DA ROLETA */
         #roleta-screen {
             position: absolute; width: 100vw; height: 100vh;
             background: radial-gradient(circle, #1a000a 0%, #000 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
         }
 
-        .header {
-            width: 90%; margin-top: 3vh; background: rgba(255,0,85,0.1);
-            border: 2px solid #ff0055; padding: 2vh; border-radius: 15px;
-            text-align: center; box-shadow: 0 0 30px rgba(255,0,85,0.2);
-        }
-        .header h1 { color: #fff; font-size: 2.2vw; margin: 0; text-transform: uppercase; text-shadow: 0 0 10px #ff0055; }
-
+        /* TEXTOS LATERAIS */
         .main-layout { display: flex; align-items: center; justify-content: center; gap: 5vw; flex: 1; width: 100%; }
-        
-        .side-title { color: #fff; font-size: 4vw; font-weight: 900; text-transform: uppercase; line-height: 0.9; text-shadow: 0 0 20px #D4AF37; width: 20vw; }
-        .side-title span { color: #ff0055; font-size: 3vw; }
+        .side-title { color: #fff; font-size: 4vw; font-weight: 900; text-transform: uppercase; line-height: 0.9; text-shadow: 0 0 20px #D4AF37; }
+        .side-title span { color: #ff0055; }
 
-        /* A RODA */
-        .wheel-box { position: relative; width: 55vh; height: 55vh; }
+        /* CONTENTOR DA RODA */
+        .wheel-box { position: relative; width: 65vh; height: 65vh; }
+        
+        /* SETA/PONTEIRO */
         .pointer { 
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 20px solid transparent; 
-            border-right: 20px solid transparent; border-top: 40px solid #fff; z-index: 10;
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 25px solid transparent; 
+            border-right: 25px solid transparent; border-top: 45px solid #fff; z-index: 100;
         }
+
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; border: 12px solid #D4AF37;
-            box-shadow: 0 0 50px rgba(212,175,55,0.4); overflow: hidden;
+            position: relative; overflow: hidden;
             transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1);
             background: conic-gradient(
                 #111 0deg 40deg,    #ff0055 40deg 80deg,
@@ -49,38 +44,48 @@
             );
         }
 
+        /* TEXTO DENTRO DAS FATIAS */
+        .slice-text {
+            position: absolute; width: 50%; height: 50px;
+            top: 50%; left: 50%; transform-origin: 0% 50%;
+            text-align: right; padding-right: 40px; box-sizing: border-box;
+            color: #fff; font-weight: 900; font-size: 1.4vh; text-transform: uppercase;
+            text-shadow: 2px 2px 4px #000;
+        }
+
         /* RESULTADO POPUP */
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
             background: rgba(0,0,0,0.95); border: 5px solid #D4AF37; padding: 5vh;
-            border-radius: 20px; color: #fff; font-size: 4vw; font-weight: 900;
-            text-align: center; z-index: 100; transition: transform 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+            border-radius: 20px; color: #fff; font-size: 5vw; font-weight: 900;
+            text-align: center; z-index: 200; transition: transform 0.5s;
         }
         #resultado.show { transform: translate(-50%, -50%) scale(1); }
 
-        .footer-hint { margin-bottom: 4vh; color: #D4AF37; font-size: 1.8vw; font-weight: 700; text-transform: uppercase; animation: flash 1s infinite; }
-        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .footer-hint { margin-bottom: 5vh; color: #D4AF37; font-size: 2vw; font-weight: 700; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
     <div id="roleta-screen">
-        <div class="header">
-            <h1>Pede uma Régua ou Pack e gira a Roleta!</h1>
+        <div style="margin-top: 5vh; color: #fff; font-size: 2vw; font-weight: 900; text-transform: uppercase; border: 2px solid #ff0055; padding: 10px 30px; border-radius: 10px;">
+            Cheers O Bar - Pede uma Régua e Gira!
         </div>
 
         <div class="main-layout">
-            <div class="side-title">ROLETA<span>DO<br>CHEERS</span></div>
+            <div class="side-title">ROLETA<br><span>DO CHEERS</span></div>
             
             <div class="wheel-box">
                 <div class="pointer"></div>
-                <div id="wheel" class="wheel"></div>
+                <div id="wheel" class="wheel">
+                    </div>
             </div>
 
-            <div class="side-title" style="text-align: right;">GANHA<span>PRÉMIOS</span></div>
+            <div class="side-title" style="text-align: right;">GANHA<br><span>PRÉMIOS</span></div>
         </div>
 
-        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO PARA GIRAR!</div>
+        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO DO COMANDO!</div>
     </div>
 
     <div id="resultado"></div>
@@ -93,25 +98,32 @@
         let aRodar = false;
         let rotacaoTotal = 0;
 
-        // Configuração oficial de fatias e prémios
         const fatias = [
-            { id: 0, tipo: 'TENTA', texto: 'TENTA OUTRA VEZ' },
-            { id: 1, tipo: 'FINO',  texto: 'OFERTA 1 FINO' },
-            { id: 2, tipo: 'REGUA', texto: 'OFERTA 1 RÉGUA' },
-            { id: 3, tipo: 'TENTA', texto: 'TENTA OUTRA VEZ' },
-            { id: 4, tipo: 'FINO',  texto: 'OFERTA 1 FINO' },
-            { id: 5, tipo: 'TENTA', texto: 'TENTA OUTRA VEZ' },
-            { id: 6, tipo: 'FINO',  texto: 'OFERTA 1 FINO' },
-            { id: 7, tipo: 'REGUA', texto: 'OFERTA 1 RÉGUA' },
-            { id: 8, tipo: 'SHOTS', texto: 'JACKPOT: 5 SHOTS!' }
+            { id: 0, texto: 'TENTA OUTRA VEZ' },
+            { id: 1, texto: 'OFERTA 1 FINO' },
+            { id: 2, texto: 'OFERTA 1 RÉGUA' },
+            { id: 3, texto: 'TENTA OUTRA VEZ' },
+            { id: 4, texto: 'OFERTA 1 FINO' },
+            { id: 5, texto: 'TENTA OUTRA VEZ' },
+            { id: 6, texto: 'OFERTA 1 FINO' },
+            { id: 7, texto: 'OFERTA 1 RÉGUA' },
+            { id: 8, texto: 'JACKPOT: 5 SHOTS!' }
         ];
+
+        // Criar os textos nas fatias visualmente
+        fatias.forEach((f, i) => {
+            const div = document.createElement('div');
+            div.className = 'slice-text';
+            // Ajuste do ângulo: cada fatia tem 40 graus. O -110 é para alinhar o texto ao centro da fatia.
+            const angulo = (i * 40) - 70; 
+            div.style.transform = `rotate(${angulo}deg)`;
+            div.innerText = f.texto;
+            wheel.appendChild(div);
+        });
 
         function girar() {
             if (aRodar) {
-                // Se já terminou e o resultado está visível, fecha o resultado
-                if (resultado.classList.contains('show')) {
-                    resultado.classList.remove('show');
-                }
+                if (resultado.classList.contains('show')) resultado.classList.remove('show');
                 return;
             }
 
@@ -119,44 +131,38 @@
             resultado.classList.remove('show');
             hint.style.visibility = 'hidden';
 
-            // Lógica de probabilidade
             const sorte = Math.random() * 100;
-            let fatiaGanhadora;
+            let ganhador;
+            if (sorte < 5) ganhador = fatias[8];
+            else if (sorte < 30) ganhador = fatias[Math.random() > 0.5 ? 2 : 7];
+            else if (sorte < 70) ganhador = fatias[Math.random() > 0.5 ? 1 : 4];
+            else ganhador = fatias[Math.random() > 0.5 ? 0 : 3];
 
-            if (sorte < 5) fatiaGanhadora = fatias[8];        // Jackpot (5%)
-            else if (sorte < 30) fatiaGanhadora = fatias[2]; // Régua (25%)
-            else if (sorte < 70) fatiaGanhadora = fatias[1]; // Fino (40%)
-            else fatiaGanhadora = fatias[0];                 // Tenta outra vez (30%)
-
-            // Cálculo exato do ângulo para a Hisense
-            const grausPorFatia = 40; 
-            const anguloBase = 360 - (fatiaGanhadora.id * grausPorFatia);
-            const voltasExtra = (Math.floor(Math.random() * 5) + 8) * 360; // 8 a 12 voltas para show
+            // Cálculo da rotação
+            const anguloFatia = 360 - (ganhador.id * 40);
+            const voltas = (Math.floor(Math.random() * 5) + 10) * 360;
+            rotacaoTotal += voltas + anguloFatia - (rotacaoTotal % 360);
             
-            rotacaoTotal += voltasExtra + anguloBase;
             wheel.style.transform = `rotate(${rotacaoTotal}deg)`;
 
             setTimeout(() => {
                 aRodar = false;
-                resultado.innerHTML = fatiaGanhadora.texto + "<br><span style='font-size:1.5vw; color:#888;'>Carrega para continuar</span>";
+                resultado.innerHTML = ganhador.texto + "<br><span style='font-size:2vw; color:#888;'>OK para continuar</span>";
                 resultado.classList.add('show');
                 hint.style.visibility = 'visible';
             }, 6000);
         }
 
-        // COMANDO HISENSE: Qualquer tecla ou clique dispara o giro
+        // COMANDO TV
         window.addEventListener('keydown', (e) => {
             e.preventDefault();
             girar();
         });
 
-        document.addEventListener('mousedown', (e) => {
+        document.addEventListener('click', (e) => {
             e.preventDefault();
             girar();
         });
-
-        // Forçar foco para o browser da TV não "adormecer"
-        setInterval(() => { if(!aRodar) window.focus(); }, 1000);
     </script>
 </body>
 </html>
