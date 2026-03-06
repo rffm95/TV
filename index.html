@@ -7,14 +7,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
-        /* CONFIGURAÇÕES 4K E MODO KIOSK */
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
             background-color: #000; overflow: hidden;
             font-family: 'Montserrat', sans-serif;
             user-select: none; cursor: none;
         }
-
         * { cursor: none !important; }
 
         #media-container { width: 100vw; height: 100vh; position: relative; }
@@ -24,7 +22,7 @@
         }
         .media-player.active { opacity: 1; z-index: 2; }
 
-        /* ================= MENU PRINCIPAL ================= */
+        /* ── MENU ── */
         #tv-menu {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 50;
@@ -32,136 +30,165 @@
             opacity: 1; transition: opacity 0.4s ease;
         }
         #tv-menu.hidden { opacity: 0; pointer-events: none; }
-
         .logo-bar {
-            color: #fff; font-size: 60px; font-weight: 900; margin-bottom: 60px;
+            color: #fff; font-size: 4vw; font-weight: 900; margin-bottom: 5vh;
             text-transform: uppercase; letter-spacing: 8px; text-shadow: 0 0 30px rgba(212,175,55,0.8);
         }
-
-        .menu-row { display: flex; gap: 40px; margin-bottom: 40px; }
+        .menu-row { display: flex; gap: 2.5vw; margin-bottom: 2.5vh; }
         .menu-item {
-            color: #888; font-size: 40px; font-weight: 700; padding: 30px 80px;
-            border-radius: 60px; border: 5px solid transparent; background: rgba(255,255,255,0.05); text-transform: uppercase;
+            color: #888; font-size: 2.5vw; font-weight: 700; padding: 2.2vh 5vw;
+            border-radius: 60px; border: 4px solid transparent;
+            background: rgba(255,255,255,0.05); text-transform: uppercase;
             transition: all 0.2s ease;
         }
         .menu-item.focused {
             color: #fff; border-color: #D4AF37; background: rgba(212,175,55,0.2);
-            transform: scale(1.15); box-shadow: 0 0 40px rgba(212,175,55,0.6);
+            transform: scale(1.12); box-shadow: 0 0 40px rgba(212,175,55,0.6);
         }
-
-        #roleta-btn.focused { border-color: #ff0055; background: rgba(255, 0, 85, 0.2); box-shadow: 0 0 40px rgba(255, 0, 85, 0.6); }
-        #cartas-btn.focused { border-color: #00e5ff; background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 40px rgba(0, 229, 255, 0.6); }
+        #roleta-btn.focused { border-color: #ff0055; background: rgba(255,0,85,0.2); box-shadow: 0 0 40px rgba(255,0,85,0.6); }
+        #cartas-btn.focused { border-color: #00e5ff; background: rgba(0,229,255,0.2); box-shadow: 0 0 40px rgba(0,229,255,0.6); }
 
         #clock {
-            position: absolute; top: 40px; right: 60px; color: rgba(255,255,255,0.8);
-            font-size: 40px; font-weight: 700; z-index: 5; text-shadow: 3px 3px 10px #000;
+            position: absolute; top: 2.5vh; right: 3vw;
+            color: rgba(255,255,255,0.8); font-size: 2.4vw; font-weight: 700;
+            z-index: 5; text-shadow: 3px 3px 10px #000;
         }
+        #fs-hint { position: absolute; top: 10px; left: 10px; color: rgba(255,255,255,0.2); font-size: 12px; z-index: 100; }
 
-        #fs-hint { position: absolute; top: 10px; left: 10px; color: rgba(255,255,255,0.3); font-size: 14px; z-index: 100; }
-
-        /* ================= JOGO ALTO OU BAIXO (CARTAS) ================= */
+        /* ── CARTAS ── */
         #cartas-container {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at center, #003311 0%, #000000 100%);
+            background: radial-gradient(circle at center, #003311 0%, #000 100%);
             z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         #cartas-container.active { opacity: 1; pointer-events: auto; }
-
         .cartas-header {
-            position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.8); border: 3px solid #00e5ff; padding: 30px 60px;
-            border-radius: 30px; text-align: center; width: 70%; max-width: 1600px; box-shadow: 0 0 40px rgba(0, 229, 255, 0.2);
+            position: absolute; top: 3vh; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); border: 3px solid #00e5ff; padding: 2vh 4vw;
+            border-radius: 2vw; text-align: center; width: 70%; box-shadow: 0 0 40px rgba(0,229,255,0.2);
         }
-        .cartas-title {
-            color: #fff;
-            font-size: 55px;
-            font-weight: 900;
-            margin: 0 0 15px 0;
-            text-transform: uppercase;
-            text-shadow: 0 0 20px #00e5ff;
-            -webkit-text-stroke: 3px #000;
-            text-stroke: 3px #000;
-        }
-        .cartas-rules {
-            color: #aaa;
-            font-size: 30px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .cartas-layout { display: flex; gap: 150px; margin-top: 100px; align-items: center; justify-content: center; }
-
-        .card-wrapper { perspective: 2000px; width: 450px; height: 650px; }
-        .card { width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        .cartas-title { color: #fff; font-size: 3.5vw; font-weight: 900; margin: 0 0 1vh; text-transform: uppercase; text-shadow: 0 0 20px #00e5ff; -webkit-text-stroke: 2px #000; }
+        .cartas-rules { color: #aaa; font-size: 1.8vw; font-weight: 700; text-transform: uppercase; }
+        .cartas-layout { display: flex; gap: 8vw; align-items: center; justify-content: center; }
+        .card-wrapper { perspective: 2000px; width: 20vw; height: 30vw; max-width: 420px; max-height: 620px; }
+        .card { width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175,0.885,0.32,1.275); transform-style: preserve-3d; border-radius: 2vw; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
         .card.flipped { transform: rotateY(180deg); }
-
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .card-back { background: linear-gradient(135deg, #111, #333); border: 20px solid #fff; background-image: radial-gradient(#D4AF37 15%, transparent 16%), radial-gradient(#D4AF37 15%, transparent 16%); background-size: 40px 40px; background-position: 0 0, 20px 20px; }
-        .card-back::after { content: "CHEERS"; color: #fff; font-size: 60px; font-weight: 900; background: #000; padding: 15px 40px; border: 5px solid #D4AF37; transform: rotate(-45deg); box-shadow: 0 0 30px rgba(0,0,0,0.9); }
-
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 2vw; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .card-back { background: linear-gradient(135deg,#111,#333); border: 1.5vw solid #fff; background-image: radial-gradient(#D4AF37 15%,transparent 16%),radial-gradient(#D4AF37 15%,transparent 16%); background-size: 40px 40px; background-position: 0 0,20px 20px; }
+        .card-back::after { content:"CHEERS"; color:#fff; font-size:3vw; font-weight:900; background:#000; padding:1vh 2vw; border:4px solid #D4AF37; transform:rotate(-45deg); box-shadow:0 0 30px rgba(0,0,0,0.9); }
         .card-front { background: #fff; transform: rotateY(180deg); border: 4px solid #ccc; position: relative; }
-        .card-front.red { color: #e60000; }
-        .card-front.black { color: #111; }
-        
-        .card-value { font-size: 200px; font-weight: 900; line-height: 1; margin-top: 30px;}
-        .card-suit { font-size: 140px; line-height: 1; }
-        .corner-top { position: absolute; top: 25px; left: 30px; font-size: 55px; font-weight: bold; text-align: center; line-height: 1; }
-        .corner-bottom { position: absolute; bottom: 25px; right: 30px; font-size: 55px; font-weight: bold; text-align: center; line-height: 1; transform: rotate(180deg); }
+        .card-front.red { color: #e60000; } .card-front.black { color: #111; }
+        .card-value { font-size: 10vw; font-weight: 900; line-height: 1; margin-top: 2vh; }
+        .card-suit { font-size: 7vw; line-height: 1; }
+        .corner-top { position: absolute; top: 3%; left: 6%; font-size: 2.8vw; font-weight: bold; text-align: center; line-height: 1; }
+        .corner-bottom { position: absolute; bottom: 3%; right: 6%; font-size: 2.8vw; font-weight: bold; text-align: center; line-height: 1; transform: rotate(180deg); }
+        .cartas-action-area { position: absolute; bottom: 4vh; text-align: center; width: 100%; }
+        .cartas-status { font-size: 4vw; font-weight: 900; color: #fff; text-transform: uppercase; text-shadow: 0 0 30px rgba(255,255,255,0.5); margin-bottom: 2vh; }
+        .btn-hint { color: #aaa; font-size: 1.4vw; font-weight: 700; text-transform: uppercase; background: rgba(0,0,0,0.6); padding: 1.2vh 2.5vw; border-radius: 40px; border: 2px solid #333; display: inline-block; }
+        .win-text { color: #D4AF37; text-shadow: 0 0 40px #D4AF37; font-size: 5vw; }
+        .lose-text { color: #ff0055; text-shadow: 0 0 40px #ff0055; font-size: 5vw; }
 
-        .cartas-action-area { position: absolute; bottom: 80px; text-align: center; width: 100%; }
-        .cartas-status { font-size: 80px; font-weight: 900; color: #fff; text-transform: uppercase; text-shadow: 0 0 30px rgba(255,255,255,0.5); margin-bottom: 30px; }
-        .btn-hint { color: #aaa; font-size: 26px; font-weight: 700; text-transform: uppercase; background: rgba(0,0,0,0.6); padding: 15px 40px; border-radius: 40px; border: 2px solid #333; display: inline-block;}
-        .win-text { color: #D4AF37; text-shadow: 0 0 40px #D4AF37; font-size: 100px; }
-        .lose-text { color: #ff0055; text-shadow: 0 0 40px #ff0055; font-size: 100px; }
-
-        /* ================= ECRÃ DA ROLETA ================= */
+        /* ── ROLETA ── */
         #roleta-container {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle, #1a000a 0%, #000 100%);
-            z-index: 40; display: flex; flex-direction: column; align-items: center;
+            z-index: 40;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         #roleta-container.active { opacity: 1; pointer-events: auto; }
 
         .roleta-header {
             display: flex; align-items: center; justify-content: space-between;
-            width: 90%; max-width: 1500px; margin-top: 40px; margin-bottom: 30px;
-            background: rgba(255, 0, 85, 0.1); border: 2px solid #ff0055;
-            padding: 20px 40px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
+            width: 88%; margin-top: 2.5vh; flex-shrink: 0;
+            background: rgba(255,0,85,0.1); border: 2px solid #ff0055;
+            padding: 1.5vh 2.5vw; border-radius: 1.5vw;
+            box-shadow: 0 0 30px rgba(255,0,85,0.3);
         }
-        .roleta-promo-text { color: #fff; font-size: 34px; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px #ff0055; margin: 0; }
-        .roleta-timer-box { display: flex; flex-direction: column; align-items: flex-end; }
-        .roleta-timer-label { color: #aaa; font-size: 16px; font-weight: 700; text-transform: uppercase; }
-        #roleta-countdown { color: #D4AF37; font-size: 45px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; }
+        .roleta-promo-text { color: #fff; font-size: clamp(14px,1.6vw,30px); font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px #ff0055; margin: 0; }
+        .roleta-timer-box { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; margin-left: 2vw; }
+        .roleta-timer-label { color: #aaa; font-size: clamp(10px,0.8vw,14px); font-weight: 700; text-transform: uppercase; }
+        #roleta-countdown { color: #D4AF37; font-size: clamp(20px,2.2vw,42px); font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; }
 
-        .roleta-layout { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 1500px; gap: 80px; flex-grow: 1; }
-        .side-title { color: #fff; font-size: 90px; font-weight: 900; text-transform: uppercase; line-height: 0.9; text-shadow: 0 0 20px rgba(212,175,55,0.8); display: flex; flex-direction: column; text-align: left; }
-        .side-title span:nth-child(1) { font-size: 60px; color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.6); }
+        /* Layout central da roleta — tudo centrado */
+        .roleta-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5vw;
+            flex: 1;
+            width: 100%;
+            padding: 0 4vw;
+            box-sizing: border-box;
+        }
 
-        .wheel-box { position: relative; width: 650px; height: 650px; flex-shrink: 0; }
-        .wheel-pointer { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 35px solid transparent; border-right: 35px solid transparent; border-top: 60px solid #fff; z-index: 10; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8)); }
+        .side-title {
+            color: #fff;
+            font-size: clamp(32px, 4vw, 80px);
+            font-weight: 900; text-transform: uppercase;
+            line-height: 0.9;
+            text-shadow: 0 0 20px rgba(212,175,55,0.8);
+            display: flex; flex-direction: column; text-align: left;
+            width: 18vw; flex-shrink: 0;
+        }
+        .side-title span:nth-child(1) { font-size: clamp(22px,2.8vw,54px); color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.6); }
+
+        /* Caixa da roda — usa vh para garantir que não sai do ecrã verticalmente */
+        .wheel-box {
+            position: relative;
+            width: min(44vh, 44vw);
+            height: min(44vh, 44vw);
+            flex-shrink: 0;
+            align-self: center;
+        }
+
+        .wheel-pointer {
+            position: absolute; top: -5%; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 3.5% solid transparent;
+            border-right: 3.5% solid transparent;
+            border-top: 6% solid #fff;
+            z-index: 10;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
+        }
+
         .wheel {
-            width: 100%; height: 100%; border-radius: 50%; border: 12px solid #D4AF37;
+            width: 100%; height: 100%; border-radius: 50%;
+            border: min(1.2vh,12px) solid #D4AF37;
             box-shadow: 0 0 50px rgba(212,175,55,0.5), inset 0 0 30px rgba(0,0,0,0.9);
-            position: relative; overflow: hidden; transform: rotate(-20deg); transition: transform 6s cubic-bezier(0.1, 0.85, 0.15, 1);
-            background: conic-gradient( #111 0deg 40deg, #ff0055 40deg 80deg, #111 80deg 120deg, #ff0055 120deg 160deg, #111 160deg 200deg, #ff0055 200deg 240deg, #111 240deg 280deg, #ff0055 280deg 320deg, #D4AF37 320deg 360deg );
+            overflow: hidden;
+            transform: rotate(-20deg);
+            transition: transform 6s cubic-bezier(0.1,0.85,0.15,1);
+            background: conic-gradient(
+                #111 0deg 40deg, #ff0055 40deg 80deg,
+                #111 80deg 120deg, #ff0055 120deg 160deg,
+                #111 160deg 200deg, #ff0055 200deg 240deg,
+                #111 240deg 280deg, #ff0055 280deg 320deg,
+                #D4AF37 320deg 360deg
+            );
         }
 
-        /* Textos das fatias fora da wheel, para não serem cortados */
+        /* Textos fora da wheel para não cortarem */
         .slice-container {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            position: absolute; inset: 0;
             transform: rotate(20deg);
-            pointer-events: none;
-            z-index: 5;
+            pointer-events: none; z-index: 5;
         }
         .slice-text {
-            position: absolute; top: 0; left: 50%;
-            transform-origin: 50% 325px;
-            font-size: 24px; font-weight: 900; color: #fff;
-            text-transform: uppercase; text-align: center;
-            width: 140px; margin-left: -70px; padding-top: 30px;
-            text-shadow: 2px 2px 4px #000;
+            position: absolute;
+            top: 4%;
+            left: 50%;
+            width: 20%;
+            margin-left: -10%;
+            text-align: center;
+            font-size: clamp(9px, 1vw, 18px);
+            font-weight: 900; line-height: 1.15;
+            color: #fff; text-transform: uppercase;
+            text-shadow: 1px 1px 3px #000;
+            /* origem no centro da wheel-box */
+            transform-origin: 50% calc(50vh - 4%);
         }
         .s0 { transform: rotate(0deg); }
         .s1 { transform: rotate(40deg); }
@@ -173,58 +200,70 @@
         .s7 { transform: rotate(280deg); }
         .s8 { transform: rotate(320deg); color: #000; text-shadow: none; }
 
-        .btn-spin-container { text-align: center; margin-bottom: 50px; }
-        .btn-spin { background: #ff0055; color: #fff; border: none; padding: 20px 80px; font-size: 35px; font-weight: 900; border-radius: 50px; text-transform: uppercase; box-shadow: 0 0 30px rgba(255,0,85,0.6); display: inline-block; }
+        .btn-spin-container { text-align: center; padding-bottom: 3vh; flex-shrink: 0; }
+        .btn-spin {
+            background: #ff0055; color: #fff; border: none;
+            padding: 1.5vh 5vw; font-size: clamp(16px,1.9vw,34px);
+            font-weight: 900; border-radius: 50px; text-transform: uppercase;
+            box-shadow: 0 0 30px rgba(255,0,85,0.6); display: inline-block;
+        }
         .btn-spin.focused { border: 4px solid #fff; transform: scale(1.05); }
 
         #roleta-resultado {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.95); border: 5px solid #D4AF37; padding: 60px 100px;
-            border-radius: 30px; color: #fff; font-size: 70px; font-weight: 900;
-            text-align: center; z-index: 50; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
+            background: rgba(0,0,0,0.95); border: 5px solid #D4AF37;
+            padding: 5vh 6vw; border-radius: 2vw;
+            color: #fff; font-size: clamp(26px,3.5vw,65px); font-weight: 900;
+            text-align: center; z-index: 50;
+            transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
             text-transform: uppercase; box-shadow: 0 0 100px rgba(212,175,55,0.6);
         }
-        #roleta-resultado.show { transform: translate(-50%, -50%) scale(1); }
+        #roleta-resultado.show { transform: translate(-50%,-50%) scale(1); }
 
-        /* Jackpot Efeito */
+        /* ── JACKPOT ── */
         #jackpot-container {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.9); z-index: 60; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); z-index: 60;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.5s;
         }
         #jackpot-container.show { opacity: 1; pointer-events: auto; }
-        .jackpot-title { font-size: 120px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; color: transparent; -webkit-text-stroke: 4px #D4AF37; animation: jackpot-pulse 0.5s infinite alternate; }
-        @keyframes jackpot-pulse { 0% { color: #ff0055; text-shadow: 0 0 50px #ff0055, 0 0 100px #ff0055; transform: scale(1); } 100% { color: #00e5ff; text-shadow: 0 0 50px #00e5ff, 0 0 100px #00e5ff; transform: scale(1.1); } }
-        .jackpot-prize { font-size: 80px; font-weight: 900; color: #fff; text-transform: uppercase; text-shadow: 0 0 30px rgba(255,255,255,0.8); z-index: 65; }
-        .jackpot-hint { font-size: 24px; color: #D4AF37; margin-top: 50px; font-weight: bold; }
-        .firework { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 5px; height: 5px; border-radius: 50%; box-shadow: 0 0 #fff; animation: bang 2s ease-out infinite; }
-        .fw2 { animation-delay: 0.5s; left: 30%; top: 40%; } .fw3 { animation-delay: 1s; left: 70%; top: 60%; } .fw4 { animation-delay: 1.5s; left: 80%; top: 30%; }
-        @keyframes bang { 0% { box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff; opacity: 1; } 100% { box-shadow: -200px -200px #ff0055, 200px -200px #00e5ff, -200px 200px #D4AF37, 200px 200px #ff0055, 0 -250px #fff, 0 250px #fff, -250px 0 #D4AF37, 250px 0 #00e5ff; opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
-
+        .jackpot-title { font-size: clamp(50px,7.5vw,120px); font-weight: 900; text-transform: uppercase; margin-bottom: 2vh; color: transparent; -webkit-text-stroke: 4px #D4AF37; animation: jackpot-pulse 0.5s infinite alternate; }
+        @keyframes jackpot-pulse {
+            0% { color: #ff0055; text-shadow: 0 0 50px #ff0055, 0 0 100px #ff0055; transform: scale(1); }
+            100% { color: #00e5ff; text-shadow: 0 0 50px #00e5ff, 0 0 100px #00e5ff; transform: scale(1.1); }
+        }
+        .jackpot-prize { font-size: clamp(32px,4.8vw,80px); font-weight: 900; color: #fff; text-transform: uppercase; text-shadow: 0 0 30px rgba(255,255,255,0.8); }
+        .jackpot-hint { font-size: clamp(14px,1.3vw,22px); color: #D4AF37; margin-top: 4vh; font-weight: bold; }
+        .firework { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 5px; height: 5px; border-radius: 50%; animation: bang 2s ease-out infinite; }
+        .fw2 { animation-delay: 0.5s; left: 30%; top: 40%; }
+        .fw3 { animation-delay: 1s; left: 70%; top: 60%; }
+        .fw4 { animation-delay: 1.5s; left: 80%; top: 30%; }
+        @keyframes bang {
+            0% { box-shadow: 0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff; opacity:1; }
+            100% { box-shadow: -200px -200px #ff0055,200px -200px #00e5ff,-200px 200px #D4AF37,200px 200px #ff0055,0 -250px #fff,0 250px #fff,-250px 0 #D4AF37,250px 0 #00e5ff; opacity:0; transform:translate(-50%,-50%) scale(1.5); }
+        }
     </style>
 </head>
 <body>
 
-    <div id="fs-hint">Pressione qualquer tecla para Fullscreen 4K</div>
+    <div id="fs-hint">Prima qualquer tecla para Fullscreen</div>
     <div id="clock">00:00</div>
 
-    <!-- ECRÃ ALTO OU BAIXO (CARTAS) -->
+    <!-- CARTAS -->
     <div id="cartas-container">
         <div class="cartas-header">
             <h1 class="cartas-title">ALTO OU BAIXO</h1>
-            <div class="cartas-rules">
-                ACERTA 3 VEZES SEGUIDAS NÓS OFERECEMOS OS 3 SHOTS.
-                EM CASO DE EMPATE ESSA JOGADA NÃO CONTA.
-            </div>
+            <div class="cartas-rules">ACERTA 3 VEZES SEGUIDAS NÓS OFERECEMOS OS 3 SHOTS. EM CASO DE EMPATE ESSA JOGADA NÃO CONTA.</div>
         </div>
         <div class="cartas-layout">
-            <div class="card-wrapper" id="cw1">
+            <div class="card-wrapper">
                 <div class="card" id="card1">
                     <div class="card-face card-back"></div>
                     <div class="card-face card-front black" id="c1-front"></div>
                 </div>
             </div>
-            <div class="card-wrapper" id="cw2">
+            <div class="card-wrapper">
                 <div class="card" id="card2">
                     <div class="card-face card-back"></div>
                     <div class="card-face card-front red" id="c2-front"></div>
@@ -237,7 +276,7 @@
         </div>
     </div>
 
-    <!-- ECRÃ DA ROLETA -->
+    <!-- ROLETA -->
     <div id="roleta-container">
         <div class="roleta-header">
             <h1 class="roleta-promo-text">PEDE UMA RÉGUA OU UM PACK E HABILITA-TE A PRÉMIOS NA ROLETA!</h1>
@@ -247,7 +286,7 @@
             </div>
         </div>
         <div class="roleta-layout">
-            <div class="side-title"><span>ROLETA</span>DO CHEERS</div>
+            <div class="side-title"><span>ROLETA</span>DO<br>CHEERS</div>
             <div class="wheel-box">
                 <div class="wheel-pointer"></div>
                 <div class="wheel" id="wheel"></div>
@@ -266,25 +305,27 @@
         </div>
         <div class="btn-spin-container">
             <div class="btn-spin focused" id="btn-spin">GIRAR A ROLETA (OK)</div>
-            <div class="btn-hint">← Esquerda para Voltar ao Menu</div>
+            <div class="btn-hint" style="margin-top:1.2vh;">← Esquerda para Voltar ao Menu</div>
         </div>
         <div id="roleta-resultado"></div>
     </div>
 
-    <!-- TELA DE JACKPOT (Roleta) -->
+    <!-- JACKPOT -->
     <div id="jackpot-container">
-        <div class="firework"></div><div class="firework fw2"></div><div class="firework fw3"></div><div class="firework fw4"></div>
+        <div class="firework"></div><div class="firework fw2"></div>
+        <div class="firework fw3"></div><div class="firework fw4"></div>
         <div class="jackpot-title">JACKPOT!</div>
         <div class="jackpot-prize" id="jackpot-prize-text">OFERTA 5 SHOTS</div>
         <div class="jackpot-hint">Pressione OK para continuar</div>
     </div>
 
-    <!-- Media e Menu -->
+    <!-- MEDIA -->
     <div id="media-container">
         <video id="video-player" class="media-player" autoplay muted playsinline></video>
         <img id="image-player" class="media-player" src="" alt="">
     </div>
 
+    <!-- MENU -->
     <div id="tv-menu">
         <div class="logo-bar">CHEERS O BAR</div>
         <div class="menu-row">
@@ -298,255 +339,160 @@
     </div>
 
     <script>
-        const TEMPO_POR_FOTO = 8000;
-        const MAX_FICHEIROS = 50;
-        const DURACAO_ROLETA = 60 * 60; // 1 Hora
+        // ── CURSOR ESCONDIDO PERMANENTEMENTE ─────────────────────────────
+        (function hideCursor() {
+            const s = document.createElement('style');
+            s.textContent = '*, *::before, *::after { cursor: none !important; }';
+            document.head.appendChild(s);
+            document.body.style.cursor = 'none';
+            document.addEventListener('mousemove', e => { e.stopPropagation(); }, true);
+        })();
 
-        let currentFolder = "";
-        let currentFileIndex = 1;
-        let isMenuOpen = true;
-        let isCartasOpen = false;
-        let isRoletaOpen = false;
-        let currentFocusIndex = 0;
-        let tryingExtensionIndex = 0;
-        let imageTimer = null;
-        let isFullscreen = false;
+        const TEMPO_POR_FOTO = 8000;
+        const MAX_FICHEIROS  = 50;
+        const DURACAO_ROLETA = 60 * 60;
+
+        let currentFolder = "", currentFileIndex = 1, tryingExtensionIndex = 0;
+        let isMenuOpen = true, isCartasOpen = false, isRoletaOpen = false;
+        let currentFocusIndex = 0, imageTimer = null, isFullscreen = false;
 
         const extensions = ['.mp4', '.jpg', '.jpeg', '.png'];
-        const menuItems = document.querySelectorAll('.menu-item');
-        const tvMenu = document.getElementById('tv-menu');
+        const menuItems   = document.querySelectorAll('.menu-item');
+        const tvMenu      = document.getElementById('tv-menu');
         const videoPlayer = document.getElementById('video-player');
         const imagePlayer = document.getElementById('image-player');
-        const fsHint = document.getElementById('fs-hint');
+        const fsHint      = document.getElementById('fs-hint');
 
         // CARTAS
         const cartasContainer = document.getElementById('cartas-container');
-        const card1 = document.getElementById('card1'); const card2 = document.getElementById('card2');
-        const c1Front = document.getElementById('c1-front'); const c2Front = document.getElementById('c2-front');
-        const cartasStatus = document.getElementById('cartas-status'); const cartasHint = document.getElementById('cartas-hint');
-        const naipes = [
-            { smb: '♠', cor: 'black' },
-            { smb: '♣', cor: 'black' },
-            { smb: '♥', cor: 'red' },
-            { smb: '♦', cor: 'red' }
-        ];
+        const card1     = document.getElementById('card1');
+        const card2     = document.getElementById('card2');
+        const c1Front   = document.getElementById('c1-front');
+        const c2Front   = document.getElementById('c2-front');
+        const cartasStatus = document.getElementById('cartas-status');
+        const cartasHint   = document.getElementById('cartas-hint');
+        const naipes = [{ smb:'♠',cor:'black' },{ smb:'♣',cor:'black' },{ smb:'♥',cor:'red' },{ smb:'♦',cor:'red' }];
         const valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-
-        let etapaCartas = 0;
-        let acertos = 0;
-        let valorAtual = 0;
-        let valorNova = 0;
-        let isAnimatingCartas = false;
+        let etapaCartas = 0, acertos = 0, valorAtual = 0, valorNova = 0, isAnimatingCartas = false;
 
         // ROLETA
-        const roletaContainer = document.getElementById('roleta-container');
-        const wheel = document.getElementById('wheel');
-        const sliceContainer = document.querySelector('.slice-container');
-        const roletaResultado = document.getElementById('roleta-resultado');
+        const roletaContainer  = document.getElementById('roleta-container');
+        const wheel            = document.getElementById('wheel');
+        const sliceContainer   = document.querySelector('.slice-container');
+        const roletaResultado  = document.getElementById('roleta-resultado');
         const countdownDisplay = document.getElementById('roleta-countdown');
         const jackpotContainer = document.getElementById('jackpot-container');
-        const jackpotText = document.getElementById('jackpot-prize-text');
-        let currentRotation = -20;
-        let isSpinning = false;
-        let roletaTimer = null;
-        let tempoRestante = DURACAO_ROLETA;
+        const jackpotText      = document.getElementById('jackpot-prize-text');
+        let currentRotation = -20, isSpinning = false, roletaTimer = null, tempoRestante = DURACAO_ROLETA;
+
         const fatias = [
-            { id: 0, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
-            { id: 1, tipo: "FINO", texto: "OFERTA 1 FINO" },
-            { id: 2, tipo: "REGUA", texto: "OFERTA 1 RÉGUA" },
-            { id: 3, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
-            { id: 4, tipo: "FINO", texto: "OFERTA 1 FINO" },
-            { id: 5, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
-            { id: 6, tipo: "FINO", texto: "OFERTA 1 FINO" },
-            { id: 7, tipo: "REGUA", texto: "OFERTA 1 RÉGUA" },
-            { id: 8, tipo: "SHOTS", texto: "OFERTA 5 SHOTS" }
+            { id:0, tipo:'TENTA', texto:'TENTA OUTRA VEZ' },
+            { id:1, tipo:'FINO',  texto:'OFERTA 1 FINO'   },
+            { id:2, tipo:'REGUA', texto:'OFERTA 1 RÉGUA'  },
+            { id:3, tipo:'TENTA', texto:'TENTA OUTRA VEZ' },
+            { id:4, tipo:'FINO',  texto:'OFERTA 1 FINO'   },
+            { id:5, tipo:'TENTA', texto:'TENTA OUTRA VEZ' },
+            { id:6, tipo:'FINO',  texto:'OFERTA 1 FINO'   },
+            { id:7, tipo:'REGUA', texto:'OFERTA 1 RÉGUA'  },
+            { id:8, tipo:'SHOTS', texto:'OFERTA 5 SHOTS'  }
         ];
 
+        // ── FULLSCREEN ────────────────────────────────────────────────────
         function requestFullScreen() {
-            if (!isFullscreen) {
-                let doc = window.document;
-                let docEl = doc.documentElement;
-                let reqFS = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                if (reqFS) {
-                    reqFS.call(docEl).catch(err => console.log(err));
-                    isFullscreen = true;
-                    fsHint.style.display = 'none';
-                }
-            }
+            if (isFullscreen) return;
+            const el  = document.documentElement;
+            const req = el.requestFullscreen || el.mozRequestFullScreen || el.webkitRequestFullScreen || el.msRequestFullscreen;
+            if (req) { req.call(el).catch(()=>{}); isFullscreen = true; fsHint.style.display = 'none'; }
         }
 
+        // ── RELÓGIO ───────────────────────────────────────────────────────
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('pt-PT', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            document.getElementById('clock').innerText =
+                new Date().toLocaleTimeString('pt-PT', { hour:'2-digit', minute:'2-digit' });
         }, 1000);
 
-        // Funções CARTAS
+        // ── CARTAS ────────────────────────────────────────────────────────
         function getRandomCard() {
-            const v = Math.floor(Math.random() * valores.length);
-            const n = naipes[Math.floor(Math.random() * naipes.length)];
-            return { index: v, text: valores[v], naipe: n };
+            return { index: Math.floor(Math.random()*valores.length), text: valores[Math.floor(Math.random()*valores.length)], naipe: naipes[Math.floor(Math.random()*naipes.length)] };
         }
-
-        function setCardHTML(element, cardData) {
-            element.className = `card-face card-front ${cardData.naipe.cor}`;
-            element.innerHTML = `
-                <div class="corner-top">${cardData.text}<br>${cardData.naipe.smb}</div>
-                <div class="card-value">${cardData.text}</div>
-                <div class="card-suit">${cardData.naipe.smb}</div>
-                <div class="corner-bottom">${cardData.text}<br>${cardData.naipe.smb}</div>
-            `;
+        function setCardHTML(el, c) {
+            el.className = `card-face card-front ${c.naipe.cor}`;
+            el.innerHTML = `<div class="corner-top">${c.text}<br>${c.naipe.smb}</div><div class="card-value">${c.text}</div><div class="card-suit">${c.naipe.smb}</div><div class="corner-bottom">${c.text}<br>${c.naipe.smb}</div>`;
         }
-
         function avancarCartaAuto() {
             valorAtual = valorNova;
             c1Front.innerHTML = c2Front.innerHTML;
             c1Front.className = c2Front.className;
             card2.classList.remove('flipped');
-            setTimeout(() => {
-                cartasStatus.innerText = "MAIS ALTO OU BAIXO?";
-                cartasStatus.className = "cartas-status";
-                isAnimatingCartas = false;
-            }, 400);
+            setTimeout(() => { cartasStatus.innerText = "MAIS ALTO OU BAIXO?"; cartasStatus.className = "cartas-status"; isAnimatingCartas = false; }, 400);
         }
 
-        document.addEventListener('keydown', (e) => {
+        // ── TECLADO ───────────────────────────────────────────────────────
+        document.addEventListener('keydown', e => {
             requestFullScreen();
 
-            // ================= LOGICA DA ROLETA =================
             if (isRoletaOpen) {
-                if (e.key === 'ArrowLeft') {
-                    fecharRoletaCompleta();
-                    return;
-                }
+                if (e.key === 'ArrowLeft') { fecharRoletaCompleta(); return; }
                 if ((e.key === 'Enter' || e.key === 'OK') && !isSpinning) {
-                    if (roletaResultado.classList.contains('show') || jackpotContainer.classList.contains('show')) {
-                        fecharResultadoRoleta();
-                    } else {
-                        spinWheel();
-                    }
+                    (roletaResultado.classList.contains('show') || jackpotContainer.classList.contains('show'))
+                        ? fecharResultadoRoleta() : spinWheel();
                 }
                 return;
             }
 
-            // ================= LOGICA DAS CARTAS =================
             if (isCartasOpen) {
-                if (e.key === 'ArrowLeft') {
-                    fecharQualquerJogo();
-                    return;
-                }
-
+                if (e.key === 'ArrowLeft') { fecharQualquerJogo(); return; }
                 if (isAnimatingCartas) return;
-
                 if (e.key === 'Enter' || e.key === 'OK') {
                     if (etapaCartas === 0 || etapaCartas === 3) {
                         isAnimatingCartas = true;
-                        card1.classList.remove('flipped');
-                        card2.classList.remove('flipped');
-
+                        card1.classList.remove('flipped'); card2.classList.remove('flipped');
                         setTimeout(() => {
-                            const c1 = getRandomCard();
-                            valorAtual = c1.index;
-                            setCardHTML(c1Front, c1);
-                            card1.classList.add('flipped');
-                            cartasStatus.innerText = "MAIS ALTO OU BAIXO?";
-                            cartasStatus.className = "cartas-status";
+                            const c1 = getRandomCard(); valorAtual = c1.index;
+                            setCardHTML(c1Front, c1); card1.classList.add('flipped');
+                            cartasStatus.innerText = "MAIS ALTO OU BAIXO?"; cartasStatus.className = "cartas-status";
                             cartasHint.innerText = "Seta CIMA ou Seta BAIXO para apostar";
-                            acertos = 0;
-                            etapaCartas = 1;
-                            isAnimatingCartas = false;
+                            acertos = 0; etapaCartas = 1; isAnimatingCartas = false;
                         }, 300);
                     }
                 }
-
                 if (etapaCartas === 1 && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
                     isAnimatingCartas = true;
-
-                    const c2 = getRandomCard();
-                    valorNova = c2.index;
-                    setCardHTML(c2Front, c2);
-                    card2.classList.add('flipped');
-
-                    let guessedCorrect = false;
-                    let empate = false;
-                    if (valorNova === valorAtual) empate = true;
-                    else if (e.key === 'ArrowUp' && valorNova > valorAtual) guessedCorrect = true;
-                    else if (e.key === 'ArrowDown' && valorNova < valorAtual) guessedCorrect = true;
-
+                    const c2 = getRandomCard(); valorNova = c2.index;
+                    setCardHTML(c2Front, c2); card2.classList.add('flipped');
+                    let ok = false, empate = valorNova === valorAtual;
+                    if (!empate) ok = (e.key === 'ArrowUp' && valorNova > valorAtual) || (e.key === 'ArrowDown' && valorNova < valorAtual);
                     setTimeout(() => {
                         if (empate) {
-                            cartasStatus.innerText = "EMPATE! ESTÁS SAFO.";
-                            cartasStatus.className = "cartas-status";
+                            cartasStatus.innerText = "EMPATE! ESTÁS SAFO."; cartasStatus.className = "cartas-status";
                             setTimeout(avancarCartaAuto, 1500);
-                        } else if (guessedCorrect) {
+                        } else if (ok) {
                             acertos++;
-                            if (acertos >= 3) {
-                                cartasStatus.innerText = "GANHASTE OS 3 SHOTS!";
-                                cartasStatus.className = "cartas-status win-text";
-                                cartasHint.innerText = "OK para Novo Jogo";
-                                etapaCartas = 3;
-                                isAnimatingCartas = false;
-                            } else {
-                                cartasStatus.innerText = `ACERTO ${acertos}/3!`;
-                                cartasStatus.className = "cartas-status win-text";
-                                setTimeout(avancarCartaAuto, 1500);
-                            }
+                            if (acertos >= 3) { cartasStatus.innerText = "GANHASTE OS 3 SHOTS!"; cartasStatus.className = "cartas-status win-text"; cartasHint.innerText = "OK para Novo Jogo"; etapaCartas = 3; isAnimatingCartas = false; }
+                            else { cartasStatus.innerText = `ACERTO ${acertos}/3!`; cartasStatus.className = "cartas-status win-text"; setTimeout(avancarCartaAuto, 1500); }
                         } else {
-                            cartasStatus.innerText = "ERROU! PAGA OS SHOTS.";
-                            cartasStatus.className = "cartas-status lose-text";
-                            cartasHint.innerText = "OK para Novo Jogo";
-                            etapaCartas = 3;
-                            isAnimatingCartas = false;
+                            cartasStatus.innerText = "ERROU! PAGA OS SHOTS."; cartasStatus.className = "cartas-status lose-text"; cartasHint.innerText = "OK para Novo Jogo"; etapaCartas = 3; isAnimatingCartas = false;
                         }
                     }, 600);
                 }
                 return;
             }
 
-            // ================= LOGICA DO MENU =================
-            if (!isMenuOpen) {
-                openMenu();
-                return;
-            }
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                currentFocusIndex = (currentFocusIndex + 1) % menuItems.length;
-                updateMenuFocus();
-            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                currentFocusIndex = (currentFocusIndex - 1 + menuItems.length) % menuItems.length;
-                updateMenuFocus();
-            } else if (e.key === 'Enter' || e.key === 'OK') {
-                startCategory(menuItems[currentFocusIndex].id);
-            }
+            if (!isMenuOpen) { openMenu(); return; }
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { currentFocusIndex = (currentFocusIndex + 1) % menuItems.length; updateMenuFocus(); }
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { currentFocusIndex = (currentFocusIndex - 1 + menuItems.length) % menuItems.length; updateMenuFocus(); }
+            else if (e.key === 'Enter' || e.key === 'OK') { startCategory(menuItems[currentFocusIndex].id); }
         });
 
-        menuItems.forEach((item, index) =>
-            item.addEventListener('click', () => {
-                requestFullScreen();
-                if (isMenuOpen) {
-                    currentFocusIndex = index;
-                    updateMenuFocus();
-                    startCategory(item.id);
-                }
-            })
-        );
+        menuItems.forEach((item, i) => item.addEventListener('click', () => {
+            requestFullScreen(); if (isMenuOpen) { currentFocusIndex = i; updateMenuFocus(); startCategory(item.id); }
+        }));
+        document.getElementById('media-container').addEventListener('click', () => { requestFullScreen(); if (!isMenuOpen) openMenu(); });
 
-        document.getElementById('media-container').addEventListener('click', () => {
-            requestFullScreen();
-            if (!isMenuOpen) openMenu();
-        });
-
-        function updateMenuFocus() {
-            menuItems.forEach((item, index) =>
-                item.classList.toggle('focused', index === currentFocusIndex)
-            );
-        }
+        function updateMenuFocus() { menuItems.forEach((it,i) => it.classList.toggle('focused', i === currentFocusIndex)); }
 
         function openMenu() {
-            isMenuOpen = true;
-            isCartasOpen = false;
-            isRoletaOpen = false;
+            isMenuOpen = true; isCartasOpen = false; isRoletaOpen = false;
             tvMenu.classList.remove('hidden');
             cartasContainer.classList.remove('active');
             roletaContainer.classList.remove('active');
@@ -554,164 +500,92 @@
             if (!videoPlayer.paused) videoPlayer.pause();
             if (imageTimer) clearTimeout(imageTimer);
         }
+        function closeMenu() { isMenuOpen = false; tvMenu.classList.add('hidden'); }
+        function fecharQualquerJogo() { openMenu(); }
 
-        function closeMenu() {
-            isMenuOpen = false;
-            tvMenu.classList.add('hidden');
-        }
-
-        function startCategory(folderName) {
-            currentFolder = folderName;
-            currentFileIndex = 1;
-            tryingExtensionIndex = 0;
-
-            if (folderName === 'cartas-btn') {
-                closeMenu();
-                isCartasOpen = true;
-                cartasContainer.classList.add('active');
-                videoPlayer.pause();
-                imagePlayer.classList.remove('active');
-                etapaCartas = 0;
-                acertos = 0;
-                card1.classList.remove('flipped');
-                card2.classList.remove('flipped');
+        function startCategory(id) {
+            currentFolder = id; currentFileIndex = 1; tryingExtensionIndex = 0;
+            if (id === 'cartas-btn') {
+                closeMenu(); isCartasOpen = true; cartasContainer.classList.add('active');
+                videoPlayer.pause(); imagePlayer.classList.remove('active');
+                etapaCartas = 0; acertos = 0;
+                card1.classList.remove('flipped'); card2.classList.remove('flipped');
                 isAnimatingCartas = false;
-                cartasStatus.innerText = "PRONTO PARA JOGAR";
-                cartasStatus.className = "cartas-status";
+                cartasStatus.innerText = "PRONTO PARA JOGAR"; cartasStatus.className = "cartas-status";
                 cartasHint.innerText = "← Esquerda (Voltar) | OK (Começar)";
-            } else if (folderName === 'roleta-btn') {
-                closeMenu();
-                isRoletaOpen = true;
-                roletaContainer.classList.add('active');
-                videoPlayer.pause();
-                imagePlayer.classList.remove('active');
-                tempoRestante = DURACAO_ROLETA;
-                atualizarRelogioRoleta();
+            } else if (id === 'roleta-btn') {
+                closeMenu(); isRoletaOpen = true; roletaContainer.classList.add('active');
+                videoPlayer.pause(); imagePlayer.classList.remove('active');
+                tempoRestante = DURACAO_ROLETA; atualizarRelogioRoleta();
                 if (roletaTimer) clearInterval(roletaTimer);
-                roletaTimer = setInterval(() => {
-                    tempoRestante--;
-                    atualizarRelogioRoleta();
-                    if (tempoRestante <= 0) fecharRoletaCompleta('noite');
-                }, 1000);
-            } else {
-                closeMenu();
-                tryNextFile();
-            }
+                roletaTimer = setInterval(() => { tempoRestante--; atualizarRelogioRoleta(); if (tempoRestante <= 0) fecharRoletaCompleta('noite'); }, 1000);
+            } else { closeMenu(); tryNextFile(); }
         }
 
-        function fecharQualquerJogo() {
-            openMenu();
-        }
-
-        // ================= FUNÇÕES DA ROLETA =================
+        // ── ROLETA ────────────────────────────────────────────────────────
         function atualizarRelogioRoleta() {
-            const m = Math.floor(tempoRestante / 60);
-            const s = tempoRestante % 60;
-            countdownDisplay.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            const m = Math.floor(tempoRestante/60), s = tempoRestante%60;
+            countdownDisplay.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         }
-
         function fecharRoletaCompleta(destino = null) {
             if (roletaTimer) clearInterval(roletaTimer);
-            isRoletaOpen = false;
-            roletaContainer.classList.remove('active');
-            fecharResultadoRoleta();
-            if (destino === 'noite') {
-                currentFocusIndex = Array.from(menuItems).findIndex(i => i.id === 'noite');
-                updateMenuFocus();
-                startCategory('noite');
-            } else {
-                openMenu();
-            }
+            isRoletaOpen = false; roletaContainer.classList.remove('active'); fecharResultadoRoleta();
+            if (destino === 'noite') { currentFocusIndex = Array.from(menuItems).findIndex(i => i.id === 'noite'); updateMenuFocus(); startCategory('noite'); }
+            else openMenu();
         }
-
-        function fecharResultadoRoleta() {
-            roletaResultado.classList.remove('show');
-            jackpotContainer.classList.remove('show');
-        }
+        function fecharResultadoRoleta() { roletaResultado.classList.remove('show'); jackpotContainer.classList.remove('show'); }
 
         function spinWheel() {
             isSpinning = true;
             const sorte = Math.random() * 100;
-            let tipoGanho;
-            if (sorte < 40) tipoGanho = "TENTA";
-            else if (sorte < 70) tipoGanho = "FINO";
-            else if (sorte < 90) tipoGanho = "REGUA";
-            else tipoGanho = "SHOTS";
-
-            const fatiasPossiveis = fatias.filter(f => f.tipo === tipoGanho);
-            const fatiaVencedora = fatiasPossiveis[Math.floor(Math.random() * fatiasPossiveis.length)];
-
-            const anguloAlvo = 360 - (fatiaVencedora.id * 40);
-            const voltas = (Math.floor(Math.random() * 5) + 6) * 360;
-            const offsetAtual = currentRotation % 360;
-            const rotacaoFinal = (currentRotation - offsetAtual) + voltas + anguloAlvo - 20;
+            let tipo = sorte < 40 ? 'TENTA' : sorte < 70 ? 'FINO' : sorte < 90 ? 'REGUA' : 'SHOTS';
+            const possiveis = fatias.filter(f => f.tipo === tipo);
+            const vencedora = possiveis[Math.floor(Math.random() * possiveis.length)];
+            const anguloAlvo = 360 - vencedora.id * 40;
+            const voltas = (Math.floor(Math.random()*5) + 6) * 360;
+            const rotacaoFinal = (currentRotation - currentRotation%360) + voltas + anguloAlvo - 20;
 
             wheel.style.transform = `rotate(${rotacaoFinal}deg)`;
-            sliceContainer.style.transform = `rotate(${rotacaoFinal + 20}deg)`; // +20 para compensar o offset inicial
+            sliceContainer.style.transform = `rotate(${rotacaoFinal + 20}deg)`;
             currentRotation = rotacaoFinal;
 
             setTimeout(() => {
                 isSpinning = false;
-                if (tipoGanho === "REGUA" || tipoGanho === "SHOTS") {
-                    jackpotText.innerText = fatiaVencedora.texto;
+                if (tipo === 'REGUA' || tipo === 'SHOTS') {
+                    jackpotText.innerText = vencedora.texto;
                     jackpotContainer.classList.add('show');
                 } else {
                     roletaResultado.innerHTML = `
-                        <div style="font-size:30px; color:#aaa; margin-bottom:10px;">SAIU:</div>
-                        <div>${fatiaVencedora.texto}</div>
-                        <div style="font-size:20px; margin-top:30px; color:#D4AF37;">Pressione OK para continuar</div>
-                    `;
+                        <div style="font-size:clamp(12px,1.5vw,26px);color:#aaa;margin-bottom:1vh;">SAIU:</div>
+                        <div>${vencedora.texto}</div>
+                        <div style="font-size:clamp(11px,1vw,18px);margin-top:2.5vh;color:#D4AF37;">Pressione OK para continuar</div>`;
                     roletaResultado.classList.add('show');
                 }
             }, 6000);
         }
 
-        // ================= LEITOR DE MEDIA =================
+        // ── MEDIA ─────────────────────────────────────────────────────────
         function tryNextFile() {
             if (isMenuOpen || isCartasOpen || isRoletaOpen) return;
             if (imageTimer) clearTimeout(imageTimer);
             if (currentFileIndex > MAX_FICHEIROS) currentFileIndex = 1;
-
             const ext = extensions[tryingExtensionIndex];
-            const testPath = `${currentFolder}/${currentFileIndex}${ext}`;
-            const isVideo = ext === '.mp4';
-
-            if (isVideo) {
+            const path = `${currentFolder}/${currentFileIndex}${ext}`;
+            if (ext === '.mp4') {
                 imagePlayer.classList.remove('active');
-                videoPlayer.src = testPath;
-                videoPlayer.load();
-                videoPlayer.onloadeddata = () => {
-                    videoPlayer.classList.add('active');
-                    videoPlayer.play().catch(() => setTimeout(advanceToNextIndex, 1000));
-                };
+                videoPlayer.src = path; videoPlayer.load();
+                videoPlayer.onloadeddata = () => { videoPlayer.classList.add('active'); videoPlayer.play().catch(()=>setTimeout(advanceToNextIndex,1000)); };
                 videoPlayer.onended = () => advanceToNextIndex();
                 videoPlayer.onerror = () => tryNextExtension();
             } else {
-                videoPlayer.classList.remove('active');
-                videoPlayer.pause();
-                imagePlayer.src = testPath;
-                imagePlayer.onload = () => {
-                    imagePlayer.classList.add('active');
-                    imageTimer = setTimeout(() => advanceToNextIndex(), TEMPO_POR_FOTO);
-                };
+                videoPlayer.classList.remove('active'); videoPlayer.pause();
+                imagePlayer.src = path;
+                imagePlayer.onload  = () => { imagePlayer.classList.add('active'); imageTimer = setTimeout(advanceToNextIndex, TEMPO_POR_FOTO); };
                 imagePlayer.onerror = () => tryNextExtension();
             }
         }
-
-        function tryNextExtension() {
-            tryingExtensionIndex++;
-            if (tryingExtensionIndex >= extensions.length) {
-                advanceToNextIndex();
-            } else {
-                tryNextFile();
-            }
-        }
-
-        function advanceToNextIndex() {
-            currentFileIndex++;
-            tryingExtensionIndex = 0;
-            tryNextFile();
-        }
+        function tryNextExtension() { tryingExtensionIndex++; tryingExtensionIndex >= extensions.length ? advanceToNextIndex() : tryNextFile(); }
+        function advanceToNextIndex() { currentFileIndex++; tryingExtensionIndex = 0; tryNextFile(); }
 
         updateMenuFocus();
     </script>
