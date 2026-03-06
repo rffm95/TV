@@ -3,120 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar TV</title>
+    <title>CHEERS - MODO ROLETA EXPRESS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
-        
-        * { 
-            cursor: none !important; 
-            outline: none !important; 
-            user-select: none;
-            touch-action: none;
-        }
 
+        * { cursor: none !important; user-select: none; outline: none !important; }
+        
         body, html { 
             margin: 0; padding: 0; width: 100vw; height: 100vh; 
-            background: #000; overflow: hidden; 
+            background: #000; color: #fff; overflow: hidden;
             font-family: 'Montserrat', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        #tv-menu {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: #000; z-index: 1000;
+        /* Contentor da Roleta */
+        #roleta-container {
+            position: relative; width: 80vh; height: 80vh;
+            border-radius: 50%; border: 15px solid #D4AF37;
+            box-shadow: 0 0 50px rgba(212,175,55,0.5);
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            background: conic-gradient(
+                #d40000 0deg 45deg, #1a1a1a 45deg 90deg,
+                #d40000 90deg 135deg, #1a1a1a 135deg 180deg,
+                #d40000 180deg 225deg, #1a1a1a 225deg 270deg,
+                #d40000 270deg 315deg, #1a1a1a 315deg 360deg
+            );
         }
 
-        .menu-row { display: flex; gap: 30px; margin-bottom: 30px; }
-
-        /* Botão real com propriedades de sistema */
-        .menu-btn {
-            background: #1a1a1a; border: 6px solid #333; color: #555;
-            padding: 30px 60px; font-size: 3vw; font-weight: 900;
-            border-radius: 15px; min-width: 300px;
-            transition: all 0.1s;
+        /* Ponteiro */
+        #seta {
+            position: absolute; top: -20px; left: 50%;
+            transform: translateX(-50%); width: 0; height: 0;
+            border-left: 30px solid transparent; border-right: 30px solid transparent;
+            border-top: 50px solid #D4AF37; z-index: 10;
         }
 
-        /* O que a TV vai mostrar quando selecionado */
-        .menu-btn:focus, .menu-btn.selected {
-            border-color: #D4AF37 !important;
-            color: #fff !important;
-            background: #222 !important;
-            transform: scale(1.1);
-            box-shadow: 0 0 60px rgba(212,175,55,0.8);
+        #instrucao {
+            position: absolute; bottom: 5vh; font-size: 3vw;
+            color: #D4AF37; text-transform: uppercase; letter-spacing: 5px;
+            animation: pisca 1.5s infinite;
         }
 
-        .logo { color: #fff; font-size: 6vw; margin-bottom: 5vh; text-transform: uppercase; }
-        .hidden { display: none !important; }
+        @keyframes pisca { 0% {opacity: 1;} 50% {opacity: 0.3;} 100% {opacity: 1;} }
+
+        /* Centro da Roleta */
+        #centro {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10vh; height: 10vh; background: #D4AF37;
+            border-radius: 50%; z-index: 5; border: 5px solid #fff;
+        }
     </style>
 </head>
 <body>
 
-    <div id="tv-menu">
-        <div class="logo">CHEERS</div>
-        <div class="menu-row">
-            <button class="menu-btn" id="noite" tabindex="1">NOITE</button>
-            <button class="menu-btn" id="menu" tabindex="2">MENU</button>
-        </div>
-        <div class="menu-row">
-            <button class="menu-btn" id="roleta" tabindex="3">ROLETA</button>
-            <button class="menu-btn" id="jogos" tabindex="4">JOGOS</button>
-        </div>
+    <div id="seta"></div>
+    <div id="roleta-container">
+        <div id="centro"></div>
     </div>
 
+    <div id="instrucao">Carrega em QUALQUER botão</div>
+
     <script>
-        const buttons = document.querySelectorAll('.menu-btn');
-        let index = 0;
+        const roleta = document.getElementById('roleta-container');
+        let aRodar = false;
+        let grausAtuais = 0;
 
-        function forceFocus() {
-            buttons.forEach(b => b.classList.remove('selected'));
-            buttons[index].classList.add('selected');
-            buttons[index].focus();
+        function rodarRoleta() {
+            if (aRodar) return; // Impede clicar várias vezes enquanto roda
+
+            aRodar = true;
+            document.getElementById('instrucao').style.display = 'none';
+
+            // Gera uma rotação aleatória (mínimo 5 voltas + aleatório)
+            const extraGraus = Math.floor(Math.random() * 360) + 1800; 
+            grausAtuais += extraGraus;
+
+            roleta.style.transform = `rotate(${grausAtuais}deg)`;
+
+            // Quando a animação acabar (4 segundos definidos no CSS)
+            setTimeout(() => {
+                aRodar = false;
+                document.getElementById('instrucao').style.display = 'block';
+                document.getElementById('instrucao').innerText = "Carrega para rodar de novo";
+            }, 4000);
         }
 
-        // Tenta focar brutalmente a cada 500ms até haver interação
-        const focusInterval = setInterval(forceFocus, 500);
-
-        function handleOK() {
-            const action = buttons[index].id;
-            clearInterval(focusInterval);
-            document.body.innerHTML = `<h1 style="color:white;text-align:center;margin-top:20%;font-size:5vw;">A CARREGAR: ${action.toUpperCase()}</h1>`;
-            // Aqui podes disparar o reload ou a tua função de vídeo
-            setTimeout(() => location.reload(), 3000); 
-        }
-
+        // --- A MAGIA PARA A HISENSE ---
+        
+        // 1. Qualquer tecla do comando dispara a roleta
         window.addEventListener('keydown', function(e) {
-            // Bloqueia TUDO o que for nativo da TV
-            e.preventDefault();
-            e.stopPropagation();
-
-            const key = e.keyCode;
-
-            // Navegação
-            if (key === 39) { // Direita
-                index = (index + 1) % buttons.length;
-            } else if (key === 37) { // Esquerda
-                index = (index - 1 + buttons.length) % buttons.length;
-            } else if (key === 40) { // Baixo
-                if (index < 2) index += 2;
-            } else if (key === 38) { // Cima
-                if (index >= 2) index -= 2;
-            } else if (key === 13) { // OK
-                handleOK();
-            } else if (key === 10009 || key === 8 || key === 461) { // Voltar
-                location.reload();
-            }
-
-            forceFocus();
-        }, true);
-
-        // Se a TV insistir no rato, qualquer clique no ecrã ativa o OK do botão atual
-        document.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleOK();
+            // e.preventDefault(); // Removemos para evitar conflitos, queremos apenas detetar a pressão
+            rodarRoleta();
         });
 
-        // Inicialização
-        window.onload = forceFocus;
+        // 2. Qualquer clique no ecrã (se o comando estiver em modo rato)
+        document.addEventListener('click', function() {
+            rodarRoleta();
+        });
+
+        // 3. Forçar o foco inicial
+        window.onload = () => {
+            window.focus();
+        };
     </script>
 </body>
 </html>
