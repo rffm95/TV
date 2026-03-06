@@ -356,4 +356,303 @@
     var tvMenu      = document.getElementById('tv-menu');
     var videoPlayer = document.getElementById('video-player');
     var imagePlayer = document.getElementById('image-player');
-    var fsHint      = document.getElementById('fs-hint'
+    var fsHint      = document.getElementById('fs-hint');
+
+    var cartasContainer = document.getElementById('cartas-container');
+    var card1        = document.getElementById('card1');
+    var card2        = document.getElementById('card2');
+    var c1Front      = document.getElementById('c1-front');
+    var c2Front      = document.getElementById('c2-front');
+    var cartasStatus = document.getElementById('cartas-status');
+    var cartasHint   = document.getElementById('cartas-hint');
+    var naipes = [{smb:'♠',cor:'black'},{smb:'♣',cor:'black'},{smb:'♥',cor:'red'},{smb:'♦',cor:'red'}];
+    var valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+    var etapaCartas = 0, acertos = 0, valorAtual = 0, valorNova = 0, isAnimatingCartas = false;
+
+    var roletaContainer  = document.getElementById('roleta-container');
+    var wheel            = document.getElementById('wheel');
+    var sliceContainer   = document.getElementById('sliceContainer');
+    var roletaResultado  = document.getElementById('roleta-resultado');
+    var countdownDisplay = document.getElementById('roleta-countdown');
+    var jackpotContainer = document.getElementById('jackpot-container');
+    var jackpotText      = document.getElementById('jackpot-prize-text');
+    var currentRotation = -20, isSpinning = false, roletaTimer = null, tempoRestante = DURACAO_ROLETA;
+
+    var fatias = [
+        {id:0,tipo:'TENTA',texto:'TENTA OUTRA VEZ'},
+        {id:1,tipo:'FINO', texto:'OFERTA 1 FINO'},
+        {id:2,tipo:'REGUA',texto:'OFERTA 1 RÉGUA'},
+        {id:3,tipo:'TENTA',texto:'TENTA OUTRA VEZ'},
+        {id:4,tipo:'FINO', texto:'OFERTA 1 FINO'},
+        {id:5,tipo:'TENTA',texto:'TENTA OUTRA VEZ'},
+        {id:6,tipo:'FINO', texto:'OFERTA 1 FINO'},
+        {id:7,tipo:'REGUA',texto:'OFERTA 1 RÉGUA'},
+        {id:8,tipo:'SHOTS',texto:'OFERTA 5 SHOTS'}
+    ];
+
+    // Fullscreen automático
+    function requestFullScreen() {
+        if (isFullscreen) return;
+        var el = document.documentElement;
+        var req = el.requestFullscreen||el.mozRequestFullScreen||el.webkitRequestFullScreen||el.msRequestFullscreen;
+        if (req) {
+            req.call(el).then(function(){
+                isFullscreen = true;
+                fsHint.style.display = 'none';
+            }).catch(function(){});
+        }
+    }
+    // Tenta fullscreen logo ao abrir
+    window.addEventListener('load', function() {
+        setTimeout(requestFullScreen, 500);
+    });
+
+    // Relógio
+    setInterval(function() {
+        document.getElementById('clock').innerText =
+            new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+    }, 1000);
+
+    // Cartas helpers
+    function getRandomCard() {
+        var i = Math.floor(Math.random() * valores.length);
+        return { index:i, text:valores[i], naipe:naipes[Math.floor(Math.random()*naipes.length)] };
+    }
+    function setCardHTML(el, c) {
+        el.className = 'card-face card-front ' + c.naipe.cor;
+        el.innerHTML = '<div class="corner-top">'+c.text+'<br>'+c.naipe.smb+'</div>'
+                     + '<div class="card-value">'+c.text+'</div>'
+                     + '<div class="card-suit">'+c.naipe.smb+'</div>'
+                     + '<div class="corner-bottom">'+c.text+'<br>'+c.naipe.smb+'</div>';
+    }
+    function avancarCartaAuto() {
+        valorAtual = valorNova;
+        c1Front.innerHTML = c2Front.innerHTML;
+        c1Front.className = c2Front.className;
+        card2.classList.remove('flipped');
+        setTimeout(function() {
+            cartasStatus.innerText = 'MAIS ALTO OU BAIXO?';
+            cartasStatus.className = 'cartas-status';
+            isAnimatingCartas = false;
+        }, 400);
+    }
+
+    // ── HANDLER DE TECLADO PRINCIPAL ─────────────────────────────
+    document.addEventListener('keydown', function(e) {
+        requestFullScreen();
+
+        var kc  = e.keyCode || e.which || 0;
+        var key = '';
+
+        // Mapeamento universal de keyCodes para nomes
+        if (kc === 37 || kc === 4   || kc === 461)   key = 'Left';
+        else if (kc === 38 || kc === 1)               key = 'Up';
+        else if (kc === 39 || kc === 5)               key = 'Right';
+        else if (kc === 40 || kc === 2)               key = 'Down';
+        else if (kc === 13 || kc === 10009 || kc === 10182 || kc === 179 || kc === 32) key = 'OK';
+        else if (kc === 8  || kc === 27)              key = 'Back';
+        else if (e.key) {
+            if (e.key === 'ArrowLeft')  key = 'Left';
+            if (e.key === 'ArrowRight') key = 'Right';
+            if (e.key === 'ArrowUp')    key = 'Up';
+            if (e.key === 'ArrowDown')  key = 'Down';
+            if (e.key === 'Enter')      key = 'OK';
+            if (e.key === 'Backspace' || e.key === 'Escape') key = 'Back';
+        }
+
+        if (!key) return;
+
+        // ── ROLETA ──
+        if (isRoletaOpen) {
+            if (key === 'Left' || key === 'Back') { fecharRoletaCompleta(); return; }
+            if (key === 'OK' && !isSpinning) {
+                (roletaResultado.classList.contains('show') || jackpotContainer.classList.contains('show'))
+                    ? fecharResultadoRoleta() : spinWheel();
+            }
+            return;
+        }
+
+        // ── CARTAS ──
+        if (isCartasOpen) {
+            if (key === 'Left' || key === 'Back') { fecharQualquerJogo(); return; }
+            if (isAnimatingCartas) return;
+            if (key === 'OK') {
+                if (etapaCartas === 0 || etapaCartas === 3) {
+                    isAnimatingCartas = true;
+                    card1.classList.remove('flipped'); card2.classList.remove('flipped');
+                    setTimeout(function() {
+                        var c1d = getRandomCard(); valorAtual = c1d.index;
+                        setCardHTML(c1Front, c1d); card1.classList.add('flipped');
+                        cartasStatus.innerText = 'MAIS ALTO OU BAIXO?';
+                        cartasStatus.className = 'cartas-status';
+                        cartasHint.innerText = '↑ Cima = Mais Alto  |  ↓ Baixo = Mais Baixo';
+                        acertos = 0; etapaCartas = 1; isAnimatingCartas = false;
+                    }, 300);
+                }
+            }
+            if (etapaCartas === 1 && (key === 'Up' || key === 'Down')) {
+                isAnimatingCartas = true;
+                var c2d = getRandomCard(); valorNova = c2d.index;
+                setCardHTML(c2Front, c2d); card2.classList.add('flipped');
+                var empate = (valorNova === valorAtual);
+                var ok = !empate && (
+                    (key === 'Up'   && valorNova > valorAtual) ||
+                    (key === 'Down' && valorNova < valorAtual)
+                );
+                setTimeout(function() {
+                    if (empate) {
+                        cartasStatus.innerText = 'EMPATE! ESTÁS SAFO.';
+                        cartasStatus.className = 'cartas-status';
+                        setTimeout(avancarCartaAuto, 1500);
+                    } else if (ok) {
+                        acertos++;
+                        if (acertos >= 3) {
+                            cartasStatus.innerText = 'GANHASTE OS 3 SHOTS!';
+                            cartasStatus.className = 'cartas-status win-text';
+                            cartasHint.innerText = 'OK para Novo Jogo';
+                            etapaCartas = 3; isAnimatingCartas = false;
+                        } else {
+                            cartasStatus.innerText = 'ACERTO ' + acertos + '/3!';
+                            cartasStatus.className = 'cartas-status win-text';
+                            setTimeout(avancarCartaAuto, 1500);
+                        }
+                    } else {
+                        cartasStatus.innerText = 'ERROU! PAGA OS SHOTS.';
+                        cartasStatus.className = 'cartas-status lose-text';
+                        cartasHint.innerText = 'OK para Novo Jogo';
+                        etapaCartas = 3; isAnimatingCartas = false;
+                    }
+                }, 600);
+            }
+            return;
+        }
+
+        // ── MENU ──
+        if (!isMenuOpen) { openMenu(); return; }
+        if (key === 'Right' || key === 'Down') {
+            currentFocusIndex = (currentFocusIndex + 1) % menuItems.length;
+            updateMenuFocus();
+        } else if (key === 'Left' || key === 'Up') {
+            currentFocusIndex = (currentFocusIndex - 1 + menuItems.length) % menuItems.length;
+            updateMenuFocus();
+        } else if (key === 'OK') {
+            startCategory(menuItems[currentFocusIndex].id);
+        }
+    });
+
+    function updateMenuFocus() {
+        menuItems.forEach(function(it, i) { it.classList.toggle('focused', i === currentFocusIndex); });
+    }
+
+    function openMenu() {
+        isMenuOpen = true; isCartasOpen = false; isRoletaOpen = false;
+        tvMenu.classList.remove('hidden');
+        cartasContainer.classList.remove('active');
+        roletaContainer.classList.remove('active');
+        fecharResultadoRoleta();
+        if (!videoPlayer.paused) videoPlayer.pause();
+        if (imageTimer) clearTimeout(imageTimer);
+        document.body.focus();
+    }
+    function closeMenu() { isMenuOpen = false; tvMenu.classList.add('hidden'); }
+    function fecharQualquerJogo() { openMenu(); }
+
+    function startCategory(id) {
+        currentFolder = id; currentFileIndex = 1; tryingExtensionIndex = 0;
+        if (id === 'cartas-btn') {
+            closeMenu(); isCartasOpen = true; cartasContainer.classList.add('active');
+            videoPlayer.pause(); imagePlayer.classList.remove('active');
+            etapaCartas = 0; acertos = 0;
+            card1.classList.remove('flipped'); card2.classList.remove('flipped');
+            isAnimatingCartas = false;
+            cartasStatus.innerText = 'PRONTO PARA JOGAR'; cartasStatus.className = 'cartas-status';
+            cartasHint.innerText = '← Esquerda (Voltar) | OK (Começar)';
+        } else if (id === 'roleta-btn') {
+            closeMenu(); isRoletaOpen = true; roletaContainer.classList.add('active');
+            videoPlayer.pause(); imagePlayer.classList.remove('active');
+            tempoRestante = DURACAO_ROLETA; atualizarRelogioRoleta();
+            if (roletaTimer) clearInterval(roletaTimer);
+            roletaTimer = setInterval(function() {
+                tempoRestante--; atualizarRelogioRoleta();
+                if (tempoRestante <= 0) fecharRoletaCompleta('noite');
+            }, 1000);
+        } else {
+            closeMenu(); tryNextFile();
+        }
+    }
+
+    function atualizarRelogioRoleta() {
+        var m = Math.floor(tempoRestante / 60), s = tempoRestante % 60;
+        countdownDisplay.innerText = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+    function fecharRoletaCompleta(destino) {
+        if (roletaTimer) clearInterval(roletaTimer);
+        isRoletaOpen = false; roletaContainer.classList.remove('active'); fecharResultadoRoleta();
+        if (destino === 'noite') {
+            currentFocusIndex = Array.from(menuItems).findIndex(function(i){ return i.id === 'noite'; });
+            updateMenuFocus(); startCategory('noite');
+        } else openMenu();
+    }
+    function fecharResultadoRoleta() {
+        roletaResultado.classList.remove('show'); jackpotContainer.classList.remove('show');
+    }
+
+    function spinWheel() {
+        isSpinning = true;
+        var sorte = Math.random() * 100;
+        var tipo = sorte < 40 ? 'TENTA' : sorte < 70 ? 'FINO' : sorte < 90 ? 'REGUA' : 'SHOTS';
+        var possiveis = fatias.filter(function(f){ return f.tipo === tipo; });
+        var v = possiveis[Math.floor(Math.random() * possiveis.length)];
+        var anguloAlvo   = 360 - v.id * 40;
+        var voltas       = (Math.floor(Math.random() * 5) + 6) * 360;
+        var rotacaoFinal = (currentRotation - currentRotation % 360) + voltas + anguloAlvo - 20;
+
+        wheel.style.transform = 'rotate(' + rotacaoFinal + 'deg)';
+        sliceContainer.style.transform = 'rotate(' + (rotacaoFinal + 20) + 'deg)';
+        currentRotation = rotacaoFinal;
+
+        setTimeout(function() {
+            isSpinning = false;
+            if (tipo === 'REGUA' || tipo === 'SHOTS') {
+                jackpotText.innerText = v.texto;
+                jackpotContainer.classList.add('show');
+            } else {
+                roletaResultado.innerHTML =
+                    '<div style="font-size:clamp(12px,1.4vw,24px);color:#aaa;margin-bottom:1vh;">SAIU:</div>'
+                    + '<div>' + v.texto + '</div>'
+                    + '<div style="font-size:clamp(10px,1vw,18px);margin-top:2vh;color:#D4AF37;">Pressione OK para continuar</div>';
+                roletaResultado.classList.add('show');
+            }
+        }, 6000);
+    }
+
+    // MEDIA
+    function tryNextFile() {
+        if (isMenuOpen || isCartasOpen || isRoletaOpen) return;
+        if (imageTimer) clearTimeout(imageTimer);
+        if (currentFileIndex > MAX_FICHEIROS) currentFileIndex = 1;
+        var ext  = extensions[tryingExtensionIndex];
+        var path = currentFolder + '/' + currentFileIndex + ext;
+        if (ext === '.mp4') {
+            imagePlayer.classList.remove('active');
+            videoPlayer.src = path; videoPlayer.load();
+            videoPlayer.onloadeddata = function() { videoPlayer.classList.add('active'); videoPlayer.play().catch(function(){ setTimeout(advanceToNextIndex, 1000); }); };
+            videoPlayer.onended  = function() { advanceToNextIndex(); };
+            videoPlayer.onerror  = function() { tryNextExtension(); };
+        } else {
+            videoPlayer.classList.remove('active'); videoPlayer.pause();
+            imagePlayer.src = path;
+            imagePlayer.onload  = function() { imagePlayer.classList.add('active'); imageTimer = setTimeout(advanceToNextIndex, TEMPO_POR_FOTO); };
+            imagePlayer.onerror = function() { tryNextExtension(); };
+        }
+    }
+    function tryNextExtension() {
+        tryingExtensionIndex++;
+        tryingExtensionIndex >= extensions.length ? advanceToNextIndex() : tryNextFile();
+    }
+    function advanceToNextIndex() { currentFileIndex++; tryingExtensionIndex = 0; tryNextFile(); }
+
+    updateMenuFocus();
+    </script>
+</body>
+</html>
