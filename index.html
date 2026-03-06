@@ -2,127 +2,121 @@
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheers O Bar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cheers O Bar TV</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
-
-        /* 1. MATAR O CURSOR NO CSS */
+        
         * { 
             cursor: none !important; 
             outline: none !important; 
             user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #000; overflow: hidden;
+        body, html { 
+            margin: 0; padding: 0; width: 100vw; height: 100vh; 
+            background: #000; overflow: hidden; 
             font-family: 'Montserrat', sans-serif;
         }
 
         #tv-menu {
             position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center; background: rgba(0,0,0,0.9); z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: #000; z-index: 1000;
         }
 
-        .logo { color: #fff; font-size: 5vw; margin-bottom: 50px; letter-spacing: 5px; }
+        .menu-row { display: flex; gap: 30px; margin-bottom: 30px; }
 
-        .menu-row { display: flex; gap: 20px; margin-bottom: 20px; }
-
-        /* 2. TRANSFORMAR EM BUTTONS REAIS PARA A TV RECONHECER */
-        .menu-item {
-            background: #222; border: 4px solid #444; color: #888;
-            padding: 20px 40px; font-size: 2.5vw; font-weight: 900;
-            border-radius: 50px; transition: 0.2s;
-            min-width: 250px; text-align: center;
+        /* Botão real com propriedades de sistema */
+        .menu-btn {
+            background: #1a1a1a; border: 6px solid #333; color: #555;
+            padding: 30px 60px; font-size: 3vw; font-weight: 900;
+            border-radius: 15px; min-width: 300px;
+            transition: all 0.1s;
         }
 
-        /* O VIDAA foca em elementos :focus */
-        .menu-item:focus {
-            border-color: #D4AF37; color: #fff;
-            background: #333; transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(212,175,55,0.5);
+        /* O que a TV vai mostrar quando selecionado */
+        .menu-btn:focus, .menu-btn.selected {
+            border-color: #D4AF37 !important;
+            color: #fff !important;
+            background: #222 !important;
+            transform: scale(1.1);
+            box-shadow: 0 0 60px rgba(212,175,55,0.8);
         }
 
+        .logo { color: #fff; font-size: 6vw; margin-bottom: 5vh; text-transform: uppercase; }
         .hidden { display: none !important; }
-        
-        #media-container { width: 100vw; height: 100vh; }
-        video, img { width: 100%; height: 100%; object-fit: contain; display: none; }
-        .active { display: block; }
     </style>
 </head>
 <body>
 
     <div id="tv-menu">
-        <div class="logo">CHEERS O BAR</div>
+        <div class="logo">CHEERS</div>
         <div class="menu-row">
-            <button class="menu-item" id="noite">NOITE</button>
-            <button class="menu-item" id="menu">MENU</button>
+            <button class="menu-btn" id="noite" tabindex="1">NOITE</button>
+            <button class="menu-btn" id="menu" tabindex="2">MENU</button>
         </div>
         <div class="menu-row">
-            <button class="menu-item" id="roleta-btn">ROLETA</button>
-            <button class="menu-item" id="cartas-btn">JOGO CARTAS</button>
+            <button class="menu-btn" id="roleta" tabindex="3">ROLETA</button>
+            <button class="menu-btn" id="jogos" tabindex="4">JOGOS</button>
         </div>
-    </div>
-
-    <div id="media-container" class="hidden">
-        <video id="v-player" muted playsinline></video>
-        <img id="i-player">
     </div>
 
     <script>
-        const buttons = document.querySelectorAll('.menu-item');
-        let currentIndex = 0;
+        const buttons = document.querySelectorAll('.menu-btn');
+        let index = 0;
 
-        // Função para forçar o foco no botão atual
-        function setFocus() {
-            buttons[currentIndex].focus();
+        function forceFocus() {
+            buttons.forEach(b => b.classList.remove('selected'));
+            buttons[index].classList.add('selected');
+            buttons[index].focus();
         }
 
-        // 3. MATAR O CURSOR VIA JS (Mover para fora da tela)
-        document.addEventListener('mousemove', () => {
-            document.body.style.cursor = 'none';
-        });
+        // Tenta focar brutalmente a cada 500ms até haver interação
+        const focusInterval = setInterval(forceFocus, 500);
 
-        // 4. LÓGICA DE NAVEGAÇÃO PARA HISENSE
-        window.addEventListener('keydown', (e) => {
-            // Impedir que a TV use as setas para rolar a página
-            if([37,38,39,40,13].includes(e.keyCode)) e.preventDefault();
+        function handleOK() {
+            const action = buttons[index].id;
+            clearInterval(focusInterval);
+            document.body.innerHTML = `<h1 style="color:white;text-align:center;margin-top:20%;font-size:5vw;">A CARREGAR: ${action.toUpperCase()}</h1>`;
+            // Aqui podes disparar o reload ou a tua função de vídeo
+            setTimeout(() => location.reload(), 3000); 
+        }
 
-            switch(e.keyCode) {
-                case 39: // Direita
-                    currentIndex = (currentIndex + 1) % buttons.length;
-                    break;
-                case 37: // Esquerda
-                    currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
-                    break;
-                case 40: // Baixo
-                    if (currentIndex < 2) currentIndex += 2;
-                    break;
-                case 38: // Cima
-                    if (currentIndex >= 2) currentIndex -= 2;
-                    break;
-                case 13: // OK / Enter
-                    const action = buttons[currentIndex].id;
-                    alert("A carregar: " + action); 
-                    // Aqui chamas a tua função de abrir vídeo ou jogo
-                    break;
-                case 8: // Back (Botão de voltar do comando)
-                case 461:
-                case 10009:
-                    location.reload(); // Recarrega para o menu
-                    break;
+        window.addEventListener('keydown', function(e) {
+            // Bloqueia TUDO o que for nativo da TV
+            e.preventDefault();
+            e.stopPropagation();
+
+            const key = e.keyCode;
+
+            // Navegação
+            if (key === 39) { // Direita
+                index = (index + 1) % buttons.length;
+            } else if (key === 37) { // Esquerda
+                index = (index - 1 + buttons.length) % buttons.length;
+            } else if (key === 40) { // Baixo
+                if (index < 2) index += 2;
+            } else if (key === 38) { // Cima
+                if (index >= 2) index -= 2;
+            } else if (key === 13) { // OK
+                handleOK();
+            } else if (key === 10009 || key === 8 || key === 461) { // Voltar
+                location.reload();
             }
-            setFocus();
+
+            forceFocus();
+        }, true);
+
+        // Se a TV insistir no rato, qualquer clique no ecrã ativa o OK do botão atual
+        document.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleOK();
         });
 
-        // Iniciar com foco no primeiro botão após 1 segundo (tempo da TV processar)
-        setTimeout(setFocus, 1000);
-
-        // Se alguém tocar no ecrã ou usar rato, devolve o foco ao botão
-        document.addEventListener('click', setFocus);
+        // Inicialização
+        window.onload = forceFocus;
     </script>
 </body>
 </html>
