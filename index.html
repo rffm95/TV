@@ -59,7 +59,7 @@
 
         #fs-hint { position: absolute; top: 10px; left: 10px; color: rgba(255,255,255,0.3); font-size: 14px; z-index: 100; }
 
-        /* ================= JOGO SOBE E DESCE (CARTAS) ================= */
+        /* ================= JOGO ALTO OU BAIXO (CARTAS) ================= */
         #cartas-container {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at center, #003311 0%, #000000 100%);
@@ -73,9 +73,22 @@
             background: rgba(0,0,0,0.8); border: 3px solid #00e5ff; padding: 30px 60px;
             border-radius: 30px; text-align: center; width: 70%; max-width: 1600px; box-shadow: 0 0 40px rgba(0, 229, 255, 0.2);
         }
-        .cartas-title { color: #fff; font-size: 55px; font-weight: 900; margin: 0 0 15px 0; text-transform: uppercase; text-shadow: 0 0 20px #00e5ff;}
-        .cartas-rules { color: #aaa; font-size: 30px; font-weight: 700; text-transform: uppercase; }
-        .cartas-rules span { color: #D4AF37; }
+        .cartas-title {
+            color: #fff;
+            font-size: 55px;
+            font-weight: 900;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px #00e5ff;
+            -webkit-text-stroke: 3px #000;
+            text-stroke: 3px #000;
+        }
+        .cartas-rules {
+            color: #aaa;
+            font-size: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
 
         .cartas-layout { display: flex; gap: 150px; margin-top: 100px; align-items: center; justify-content: center; }
 
@@ -173,15 +186,28 @@
     <div id="fs-hint">Pressione qualquer tecla para Fullscreen 4K</div>
     <div id="clock">00:00</div>
 
-    <!-- ECRÃ SOBE E DESCE (CARTAS) -->
+    <!-- ECRÃ ALTO OU BAIXO (CARTAS) -->
     <div id="cartas-container">
         <div class="cartas-header">
-            <h1 class="cartas-title">MAIS ALTO OU MAIS BAIXO</h1>
-            <div class="cartas-rules">Pede <span>3 SHOTS</span> no balcão para jogar. Acerta 3 vezes seguidas e <span>SÃO DE GRAÇA!</span></div>
+            <h1 class="cartas-title">ALTO OU BAIXO</h1>
+            <div class="cartas-rules">
+                ACERTA 3 VEZES SEGUIDAS NÓS OFERECEMOS OS 3 SHOTS.
+                EM CASO DE EMPATE ESSA JOGADA NÃO CONTA.
+            </div>
         </div>
         <div class="cartas-layout">
-            <div class="card-wrapper" id="cw1"><div class="card" id="card1"><div class="card-face card-back"></div><div class="card-face card-front black" id="c1-front"></div></div></div>
-            <div class="card-wrapper" id="cw2"><div class="card" id="card2"><div class="card-face card-back"></div><div class="card-face card-front red" id="c2-front"></div></div></div>
+            <div class="card-wrapper" id="cw1">
+                <div class="card" id="card1">
+                    <div class="card-face card-back"></div>
+                    <div class="card-face card-front black" id="c1-front"></div>
+                </div>
+            </div>
+            <div class="card-wrapper" id="cw2">
+                <div class="card" id="card2">
+                    <div class="card-face card-back"></div>
+                    <div class="card-face card-front red" id="c2-front"></div>
+                </div>
+            </div>
         </div>
         <div class="cartas-action-area">
             <div class="cartas-status" id="cartas-status">PRONTO PARA JOGAR</div>
@@ -193,7 +219,10 @@
     <div id="roleta-container">
         <div class="roleta-header">
             <h1 class="roleta-promo-text">PEDE UMA RÉGUA OU UM PACK E HABILITA-TE A PRÉMIOS NA ROLETA!</h1>
-            <div class="roleta-timer-box"><div class="roleta-timer-label">TERMINA EM</div><div id="roleta-countdown">60:00</div></div>
+            <div class="roleta-timer-box">
+                <div class="roleta-timer-label">TERMINA EM</div>
+                <div id="roleta-countdown">60:00</div>
+            </div>
         </div>
         <div class="roleta-layout">
             <div class="side-title"><span>ROLETA</span>DO CHEERS</div>
@@ -201,10 +230,14 @@
                 <div class="wheel-pointer"></div>
                 <div class="wheel" id="wheel">
                     <div class="slice-container">
-                        <div class="slice-text s0">TENTA<br>OUTRA VEZ</div><div class="slice-text s1">OFERTA<br>1 FINO</div>
-                        <div class="slice-text s2">OFERTA<br>1 RÉGUA</div><div class="slice-text s3">TENTA<br>OUTRA VEZ</div>
-                        <div class="slice-text s4">OFERTA<br>1 FINO</div><div class="slice-text s5">TENTA<br>OUTRA VEZ</div>
-                        <div class="slice-text s6">OFERTA<br>1 FINO</div><div class="slice-text s7">OFERTA<br>1 RÉGUA</div>
+                        <div class="slice-text s0">TENTA<br>OUTRA VEZ</div>
+                        <div class="slice-text s1">OFERTA<br>1 FINO</div>
+                        <div class="slice-text s2">OFERTA<br>1 RÉGUA</div>
+                        <div class="slice-text s3">TENTA<br>OUTRA VEZ</div>
+                        <div class="slice-text s4">OFERTA<br>1 FINO</div>
+                        <div class="slice-text s5">TENTA<br>OUTRA VEZ</div>
+                        <div class="slice-text s6">OFERTA<br>1 FINO</div>
+                        <div class="slice-text s7">OFERTA<br>1 RÉGUA</div>
                         <div class="slice-text s8">OFERTA<br>5 SHOTS</div>
                     </div>
                 </div>
@@ -239,7 +272,7 @@
         </div>
         <div class="menu-row">
             <div class="menu-item" id="roleta-btn">ROLETA</div>
-            <div class="menu-item" id="cartas-btn">SOBE E DESCE</div>
+            <div class="menu-item" id="cartas-btn">ALTO OU BAIXO</div>
         </div>
     </div>
 
@@ -270,9 +303,19 @@
         const card1 = document.getElementById('card1'); const card2 = document.getElementById('card2');
         const c1Front = document.getElementById('c1-front'); const c2Front = document.getElementById('c2-front');
         const cartasStatus = document.getElementById('cartas-status'); const cartasHint = document.getElementById('cartas-hint');
-        const naipes = [{ smb: '♠', cor: 'black' }, { smb: '♣', cor: 'black' }, { smb: '♥', cor: 'red' }, { smb: '♦', cor: 'red' }];
+        const naipes = [
+            { smb: '♠', cor: 'black' },
+            { smb: '♣', cor: 'black' },
+            { smb: '♥', cor: 'red' },
+            { smb: '♦', cor: 'red' }
+        ];
         const valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-        let etapaCartas = 0; let acertos = 0; let valorAtual = 0; let valorNova = 0;
+
+        let etapaCartas = 0;
+        let acertos = 0;
+        let valorAtual = 0;
+        let valorNova = 0;
+        let isAnimatingCartas = false;
 
         // ROLETA
         const roletaContainer = document.getElementById('roleta-container');
@@ -281,154 +324,305 @@
         const countdownDisplay = document.getElementById('roleta-countdown');
         const jackpotContainer = document.getElementById('jackpot-container');
         const jackpotText = document.getElementById('jackpot-prize-text');
-        let currentRotation = -20; let isSpinning = false; let roletaTimer = null; let tempoRestante = DURACAO_ROLETA;
+        let currentRotation = -20;
+        let isSpinning = false;
+        let roletaTimer = null;
+        let tempoRestante = DURACAO_ROLETA;
         const fatias = [
-            { id: 0, tipo: "TENTA", texto: "TENTA OUTRA VEZ" }, { id: 1, tipo: "FINO", texto: "OFERTA 1 FINO" }, { id: 2, tipo: "REGUA", texto: "OFERTA 1 RÉGUA" },
-            { id: 3, tipo: "TENTA", texto: "TENTA OUTRA VEZ" }, { id: 4, tipo: "FINO", texto: "OFERTA 1 FINO" }, { id: 5, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
-            { id: 6, tipo: "FINO", texto: "OFERTA 1 FINO" }, { id: 7, tipo: "REGUA", texto: "OFERTA 1 RÉGUA" }, { id: 8, tipo: "SHOTS", texto: "OFERTA 5 SHOTS" }
+            { id: 0, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
+            { id: 1, tipo: "FINO", texto: "OFERTA 1 FINO" },
+            { id: 2, tipo: "REGUA", texto: "OFERTA 1 RÉGUA" },
+            { id: 3, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
+            { id: 4, tipo: "FINO", texto: "OFERTA 1 FINO" },
+            { id: 5, tipo: "TENTA", texto: "TENTA OUTRA VEZ" },
+            { id: 6, tipo: "FINO", texto: "OFERTA 1 FINO" },
+            { id: 7, tipo: "REGUA", texto: "OFERTA 1 RÉGUA" },
+            { id: 8, tipo: "SHOTS", texto: "OFERTA 5 SHOTS" }
         ];
 
         function requestFullScreen() {
             if (!isFullscreen) {
-                let doc = window.document; let docEl = doc.documentElement;
+                let doc = window.document;
+                let docEl = doc.documentElement;
                 let reqFS = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-                if(reqFS) { reqFS.call(docEl).catch(err => console.log(err)); isFullscreen = true; fsHint.style.display = 'none'; }
+                if (reqFS) {
+                    reqFS.call(docEl).catch(err => console.log(err));
+                    isFullscreen = true;
+                    fsHint.style.display = 'none';
+                }
             }
         }
 
-        setInterval(() => { const now = new Date(); document.getElementById('clock').innerText = now.toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'}); }, 1000);
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('pt-PT', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }, 1000);
 
         // Funções CARTAS
-        function getRandomCard() { const v = Math.floor(Math.random() * valores.length); const n = naipes[Math.floor(Math.random() * naipes.length)]; return { index: v, text: valores[v], naipe: n }; }
+        function getRandomCard() {
+            const v = Math.floor(Math.random() * valores.length);
+            const n = naipes[Math.floor(Math.random() * naipes.length)];
+            return { index: v, text: valores[v], naipe: n };
+        }
+
         function setCardHTML(element, cardData) {
             element.className = `card-face card-front ${cardData.naipe.cor}`;
-            element.innerHTML = `<div class="corner-top">${cardData.text}<br>${cardData.naipe.smb}</div><div class="card-value">${cardData.text}</div><div class="card-suit">${cardData.naipe.smb}</div><div class="corner-bottom">${cardData.text}<br>${cardData.naipe.smb}</div>`;
+            element.innerHTML = `
+                <div class="corner-top">${cardData.text}<br>${cardData.naipe.smb}</div>
+                <div class="card-value">${cardData.text}</div>
+                <div class="card-suit">${cardData.naipe.smb}</div>
+                <div class="corner-bottom">${cardData.text}<br>${cardData.naipe.smb}</div>
+            `;
+        }
+
+        function avancarCartaAuto() {
+            valorAtual = valorNova;
+            c1Front.innerHTML = c2Front.innerHTML;
+            c1Front.className = c2Front.className;
+            card2.classList.remove('flipped');
+            setTimeout(() => {
+                cartasStatus.innerText = "MAIS ALTO OU BAIXO?";
+                cartasStatus.className = "cartas-status";
+                isAnimatingCartas = false;
+            }, 400);
         }
 
         document.addEventListener('keydown', (e) => {
-            requestFullScreen(); 
+            requestFullScreen();
 
             // ================= LOGICA DA ROLETA =================
             if (isRoletaOpen) {
-                if (e.key === 'ArrowLeft') { fecharRoletaCompleta(); return; }
+                if (e.key === 'ArrowLeft') {
+                    fecharRoletaCompleta();
+                    return;
+                }
                 if ((e.key === 'Enter' || e.key === 'OK') && !isSpinning) {
-                    if (roletaResultado.classList.contains('show') || jackpotContainer.classList.contains('show')) { fecharResultadoRoleta(); } 
-                    else { spinWheel(); }
-                } 
+                    if (roletaResultado.classList.contains('show') || jackpotContainer.classList.contains('show')) {
+                        fecharResultadoRoleta();
+                    } else {
+                        spinWheel();
+                    }
+                }
                 return;
             }
 
             // ================= LOGICA DAS CARTAS =================
             if (isCartasOpen) {
-                if (e.key === 'ArrowLeft') { fecharQualquerJogo(); return; }
-                
+                if (e.key === 'ArrowLeft') {
+                    fecharQualquerJogo();
+                    return;
+                }
+
+                if (isAnimatingCartas) return;
+
                 if (e.key === 'Enter' || e.key === 'OK') {
-                    if (etapaCartas === 0) {
-                        const c1 = getRandomCard(); valorAtual = c1.index; setCardHTML(c1Front, c1);
-                        card1.classList.add('flipped'); card2.classList.remove('flipped');
-                        cartasStatus.innerText = "MAIS ALTO OU BAIXO?"; cartasStatus.className = "cartas-status";
-                        cartasHint.innerText = "Seta CIMA ou Seta BAIXO para apostar"; acertos = 0; etapaCartas = 1; 
-                    } 
-                    else if (etapaCartas === 2) {
-                        valorAtual = valorNova; c1Front.innerHTML = c2Front.innerHTML; c1Front.className = c2Front.className;
+                    if (etapaCartas === 0 || etapaCartas === 3) {
+                        isAnimatingCartas = true;
+                        card1.classList.remove('flipped');
                         card2.classList.remove('flipped');
-                        cartasStatus.innerText = "MAIS ALTO OU BAIXO?"; cartasStatus.className = "cartas-status";
-                        cartasHint.innerText = "Seta CIMA ou Seta BAIXO para apostar"; etapaCartas = 1;
-                    }
-                    else if (etapaCartas === 3) {
-                        card1.classList.remove('flipped'); card2.classList.remove('flipped');
+
                         setTimeout(() => {
-                            cartasStatus.innerText = "PRONTO PARA JOGAR"; cartasStatus.className = "cartas-status";
-                            cartasHint.innerText = "← Esquerda (Voltar) | OK (Começar)"; etapaCartas = 0;
-                        }, 500);
+                            const c1 = getRandomCard();
+                            valorAtual = c1.index;
+                            setCardHTML(c1Front, c1);
+                            card1.classList.add('flipped');
+                            cartasStatus.innerText = "MAIS ALTO OU BAIXO?";
+                            cartasStatus.className = "cartas-status";
+                            cartasHint.innerText = "Seta CIMA ou Seta BAIXO para apostar";
+                            acertos = 0;
+                            etapaCartas = 1;
+                            isAnimatingCartas = false;
+                        }, 300);
                     }
                 }
 
                 if (etapaCartas === 1 && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
-                    const c2 = getRandomCard(); valorNova = c2.index; setCardHTML(c2Front, c2);
+                    isAnimatingCartas = true;
+
+                    const c2 = getRandomCard();
+                    valorNova = c2.index;
+                    setCardHTML(c2Front, c2);
                     card2.classList.add('flipped');
 
-                    let guessedCorrect = false; let empate = false;
+                    let guessedCorrect = false;
+                    let empate = false;
                     if (valorNova === valorAtual) empate = true;
                     else if (e.key === 'ArrowUp' && valorNova > valorAtual) guessedCorrect = true;
                     else if (e.key === 'ArrowDown' && valorNova < valorAtual) guessedCorrect = true;
 
-                    if (empate) { cartasStatus.innerText = "EMPATE! A CASA GANHA."; cartasStatus.className = "cartas-status lose-text"; cartasHint.innerText = "OK para Fechar Jogo"; etapaCartas = 3; } 
-                    else if (guessedCorrect) {
-                        acertos++;
-                        if (acertos === 3) { cartasStatus.innerText = "GANHOU OS 3 SHOTS!"; cartasStatus.className = "cartas-status win-text"; cartasHint.innerText = "OK para Novo Jogo"; etapaCartas = 3; } 
-                        else { cartasStatus.innerText = `ACERTO ${acertos}/3!`; cartasStatus.className = "cartas-status win-text"; cartasHint.innerText = "Pressione OK para próxima carta"; etapaCartas = 2; }
-                    } 
-                    else { cartasStatus.innerText = "ERROU! PAGA OS SHOTS."; cartasStatus.className = "cartas-status lose-text"; cartasHint.innerText = "OK para Fechar Jogo"; etapaCartas = 3; }
+                    setTimeout(() => {
+                        if (empate) {
+                            cartasStatus.innerText = "EMPATE! ESTÁS SAFO.";
+                            cartasStatus.className = "cartas-status";
+                            setTimeout(avancarCartaAuto, 1500);
+                        } else if (guessedCorrect) {
+                            acertos++;
+                            if (acertos >= 3) {
+                                cartasStatus.innerText = "GANHASTE OS 3 SHOTS!";
+                                cartasStatus.className = "cartas-status win-text";
+                                cartasHint.innerText = "OK para Novo Jogo";
+                                etapaCartas = 3;
+                                isAnimatingCartas = false;
+                            } else {
+                                cartasStatus.innerText = `ACERTO ${acertos}/3!`;
+                                cartasStatus.className = "cartas-status win-text";
+                                setTimeout(avancarCartaAuto, 1500);
+                            }
+                        } else {
+                            cartasStatus.innerText = "ERROU! PAGA OS SHOTS.";
+                            cartasStatus.className = "cartas-status lose-text";
+                            cartasHint.innerText = "OK para Novo Jogo";
+                            etapaCartas = 3;
+                            isAnimatingCartas = false;
+                        }
+                    }, 600);
                 }
                 return;
             }
 
             // ================= LOGICA DO MENU =================
-            if (!isMenuOpen) { openMenu(); return; }
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { currentFocusIndex = (currentFocusIndex + 1) % menuItems.length; updateMenuFocus(); }
-            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { currentFocusIndex = (currentFocusIndex - 1 + menuItems.length) % menuItems.length; updateMenuFocus(); }
-            else if (e.key === 'Enter' || e.key === 'OK') { startCategory(menuItems[currentFocusIndex].id); }
+            if (!isMenuOpen) {
+                openMenu();
+                return;
+            }
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                currentFocusIndex = (currentFocusIndex + 1) % menuItems.length;
+                updateMenuFocus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                currentFocusIndex = (currentFocusIndex - 1 + menuItems.length) % menuItems.length;
+                updateMenuFocus();
+            } else if (e.key === 'Enter' || e.key === 'OK') {
+                startCategory(menuItems[currentFocusIndex].id);
+            }
         });
 
-        menuItems.forEach((item, index) => item.addEventListener('click', () => { requestFullScreen(); if (isMenuOpen) { currentFocusIndex = index; updateMenuFocus(); startCategory(item.id); } }));
-        document.getElementById('media-container').addEventListener('click', () => { requestFullScreen(); if (!isMenuOpen) openMenu(); });
+        menuItems.forEach((item, index) =>
+            item.addEventListener('click', () => {
+                requestFullScreen();
+                if (isMenuOpen) {
+                    currentFocusIndex = index;
+                    updateMenuFocus();
+                    startCategory(item.id);
+                }
+            })
+        );
 
-        function updateMenuFocus() { menuItems.forEach((item, index) => item.classList.toggle('focused', index === currentFocusIndex)); }
+        document.getElementById('media-container').addEventListener('click', () => {
+            requestFullScreen();
+            if (!isMenuOpen) openMenu();
+        });
+
+        function updateMenuFocus() {
+            menuItems.forEach((item, index) =>
+                item.classList.toggle('focused', index === currentFocusIndex)
+            );
+        }
 
         function openMenu() {
-            isMenuOpen = true; isCartasOpen = false; isRoletaOpen = false; tvMenu.classList.remove('hidden');
-            cartasContainer.classList.remove('active'); roletaContainer.classList.remove('active'); fecharResultadoRoleta();
-            if (!videoPlayer.paused) videoPlayer.pause(); if (imageTimer) clearTimeout(imageTimer);
+            isMenuOpen = true;
+            isCartasOpen = false;
+            isRoletaOpen = false;
+            tvMenu.classList.remove('hidden');
+            cartasContainer.classList.remove('active');
+            roletaContainer.classList.remove('active');
+            fecharResultadoRoleta();
+            if (!videoPlayer.paused) videoPlayer.pause();
+            if (imageTimer) clearTimeout(imageTimer);
         }
-        function closeMenu() { isMenuOpen = false; tvMenu.classList.add('hidden'); }
+
+        function closeMenu() {
+            isMenuOpen = false;
+            tvMenu.classList.add('hidden');
+        }
 
         function startCategory(folderName) {
-            currentFolder = folderName; currentFileIndex = 1; tryingExtensionIndex = 0;
-            
-            if (folderName === 'cartas-btn') { 
-                closeMenu(); isCartasOpen = true; cartasContainer.classList.add('active');
-                videoPlayer.pause(); imagePlayer.classList.remove('active');
-                etapaCartas = 0; acertos = 0; card1.classList.remove('flipped'); card2.classList.remove('flipped');
-                cartasStatus.innerText = "PRONTO PARA JOGAR"; cartasStatus.className = "cartas-status";
+            currentFolder = folderName;
+            currentFileIndex = 1;
+            tryingExtensionIndex = 0;
+
+            if (folderName === 'cartas-btn') {
+                closeMenu();
+                isCartasOpen = true;
+                cartasContainer.classList.add('active');
+                videoPlayer.pause();
+                imagePlayer.classList.remove('active');
+                etapaCartas = 0;
+                acertos = 0;
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                isAnimatingCartas = false;
+                cartasStatus.innerText = "PRONTO PARA JOGAR";
+                cartasStatus.className = "cartas-status";
                 cartasHint.innerText = "← Esquerda (Voltar) | OK (Começar)";
-            }
-            else if (folderName === 'roleta-btn') {
-                closeMenu(); isRoletaOpen = true; roletaContainer.classList.add('active');
-                videoPlayer.pause(); imagePlayer.classList.remove('active');
-                tempoRestante = DURACAO_ROLETA; atualizarRelogioRoleta();
+            } else if (folderName === 'roleta-btn') {
+                closeMenu();
+                isRoletaOpen = true;
+                roletaContainer.classList.add('active');
+                videoPlayer.pause();
+                imagePlayer.classList.remove('active');
+                tempoRestante = DURACAO_ROLETA;
+                atualizarRelogioRoleta();
                 if (roletaTimer) clearInterval(roletaTimer);
-                roletaTimer = setInterval(() => { tempoRestante--; atualizarRelogioRoleta(); if (tempoRestante <= 0) fecharRoletaCompleta('noite'); }, 1000);
+                roletaTimer = setInterval(() => {
+                    tempoRestante--;
+                    atualizarRelogioRoleta();
+                    if (tempoRestante <= 0) fecharRoletaCompleta('noite');
+                }, 1000);
+            } else {
+                closeMenu();
+                tryNextFile();
             }
-            else { closeMenu(); tryNextFile(); }
         }
 
-        function fecharQualquerJogo() { openMenu(); }
+        function fecharQualquerJogo() {
+            openMenu();
+        }
 
         // ================= FUNÇÕES DA ROLETA =================
         function atualizarRelogioRoleta() {
-            const m = Math.floor(tempoRestante / 60); const s = tempoRestante % 60;
+            const m = Math.floor(tempoRestante / 60);
+            const s = tempoRestante % 60;
             countdownDisplay.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
+
         function fecharRoletaCompleta(destino = null) {
-            if (roletaTimer) clearInterval(roletaTimer); isRoletaOpen = false; roletaContainer.classList.remove('active'); fecharResultadoRoleta();
-            if (destino === 'noite') { currentFocusIndex = Array.from(menuItems).findIndex(i => i.id === 'noite'); updateMenuFocus(); startCategory('noite'); } 
-            else openMenu();
+            if (roletaTimer) clearInterval(roletaTimer);
+            isRoletaOpen = false;
+            roletaContainer.classList.remove('active');
+            fecharResultadoRoleta();
+            if (destino === 'noite') {
+                currentFocusIndex = Array.from(menuItems).findIndex(i => i.id === 'noite');
+                updateMenuFocus();
+                startCategory('noite');
+            } else {
+                openMenu();
+            }
         }
-        function fecharResultadoRoleta() { roletaResultado.classList.remove('show'); jackpotContainer.classList.remove('show'); }
+
+        function fecharResultadoRoleta() {
+            roletaResultado.classList.remove('show');
+            jackpotContainer.classList.remove('show');
+        }
 
         function spinWheel() {
             isSpinning = true;
-            const sorte = Math.random() * 100; let tipoGanho;
-            if (sorte < 40) tipoGanho = "TENTA"; else if (sorte < 70) tipoGanho = "FINO"; else if (sorte < 90) tipoGanho = "REGUA"; else tipoGanho = "SHOTS";
+            const sorte = Math.random() * 100;
+            let tipoGanho;
+            if (sorte < 40) tipoGanho = "TENTA";
+            else if (sorte < 70) tipoGanho = "FINO";
+            else if (sorte < 90) tipoGanho = "REGUA";
+            else tipoGanho = "SHOTS";
 
             const fatiasPossiveis = fatias.filter(f => f.tipo === tipoGanho);
             const fatiaVencedora = fatiasPossiveis[Math.floor(Math.random() * fatiasPossiveis.length)];
 
             const anguloAlvo = 360 - (fatiaVencedora.id * 40);
-            const voltas = (Math.floor(Math.random() * 5) + 6) * 360; 
+            const voltas = (Math.floor(Math.random() * 5) + 6) * 360;
             const offsetAtual = currentRotation % 360;
-            const rotacaoFinal = (currentRotation - offsetAtual) + voltas + anguloAlvo - 20; 
+            const rotacaoFinal = (currentRotation - offsetAtual) + voltas + anguloAlvo - 20;
 
             wheel.style.transform = `rotate(${rotacaoFinal}deg)`;
             currentRotation = rotacaoFinal;
@@ -436,9 +630,14 @@
             setTimeout(() => {
                 isSpinning = false;
                 if (tipoGanho === "REGUA" || tipoGanho === "SHOTS") {
-                    jackpotText.innerText = fatiaVencedora.texto; jackpotContainer.classList.add('show');
+                    jackpotText.innerText = fatiaVencedora.texto;
+                    jackpotContainer.classList.add('show');
                 } else {
-                    roletaResultado.innerHTML = `<div style="font-size:30px; color:#aaa; margin-bottom:10px;">SAIU:</div><div>${fatiaVencedora.texto}</div><div style="font-size:20px; margin-top:30px; color:#D4AF37;">Pressione OK para continuar</div>`;
+                    roletaResultado.innerHTML = `
+                        <div style="font-size:30px; color:#aaa; margin-bottom:10px;">SAIU:</div>
+                        <div>${fatiaVencedora.texto}</div>
+                        <div style="font-size:20px; margin-top:30px; color:#D4AF37;">Pressione OK para continuar</div>
+                    `;
                     roletaResultado.classList.add('show');
                 }
             }, 6000);
@@ -449,21 +648,48 @@
             if (isMenuOpen || isCartasOpen || isRoletaOpen) return;
             if (imageTimer) clearTimeout(imageTimer);
             if (currentFileIndex > MAX_FICHEIROS) currentFileIndex = 1;
+
             const ext = extensions[tryingExtensionIndex];
             const testPath = `${currentFolder}/${currentFileIndex}${ext}`;
             const isVideo = ext === '.mp4';
+
             if (isVideo) {
-                imagePlayer.classList.remove('active'); videoPlayer.src = testPath; videoPlayer.load();
-                videoPlayer.onloadeddata = () => { videoPlayer.classList.add('active'); videoPlayer.play().catch(() => setTimeout(advanceToNextIndex, 1000)); };
-                videoPlayer.onended = () => advanceToNextIndex(); videoPlayer.onerror = () => tryNextExtension();
+                imagePlayer.classList.remove('active');
+                videoPlayer.src = testPath;
+                videoPlayer.load();
+                videoPlayer.onloadeddata = () => {
+                    videoPlayer.classList.add('active');
+                    videoPlayer.play().catch(() => setTimeout(advanceToNextIndex, 1000));
+                };
+                videoPlayer.onended = () => advanceToNextIndex();
+                videoPlayer.onerror = () => tryNextExtension();
             } else {
-                videoPlayer.classList.remove('active'); videoPlayer.pause(); imagePlayer.src = testPath;
-                imagePlayer.onload = () => { imagePlayer.classList.add('active'); imageTimer = setTimeout(() => advanceToNextIndex(), TEMPO_POR_FOTO); };
+                videoPlayer.classList.remove('active');
+                videoPlayer.pause();
+                imagePlayer.src = testPath;
+                imagePlayer.onload = () => {
+                    imagePlayer.classList.add('active');
+                    imageTimer = setTimeout(() => advanceToNextIndex(), TEMPO_POR_FOTO);
+                };
                 imagePlayer.onerror = () => tryNextExtension();
             }
         }
-        function tryNextExtension() { tryingExtensionIndex++; if (tryingExtensionIndex >= extensions.length) advanceToNextIndex(); else tryNextFile(); }
-        function advanceToNextIndex() { currentFileIndex++; tryingExtensionIndex = 0; tryNextFile(); }
+
+        function tryNextExtension() {
+            tryingExtensionIndex++;
+            if (tryingExtensionIndex >= extensions.length) {
+                advanceToNextIndex();
+            } else {
+                tryNextFile();
+            }
+        }
+
+        function advanceToNextIndex() {
+            currentFileIndex++;
+            tryingExtensionIndex = 0;
+            tryNextFile();
+        }
+
         updateMenuFocus();
     </script>
 </body>
