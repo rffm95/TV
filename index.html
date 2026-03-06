@@ -11,7 +11,7 @@
             margin: 0; padding: 0; width: 100vw; height: 100vh;
             background-color: #000; overflow: hidden;
             font-family: 'Montserrat', sans-serif;
-            user-select: none; cursor: none;
+            user-select: none;
         }
         * { cursor: none !important; }
 
@@ -112,34 +112,25 @@
         .roleta-timer-label { color: #aaa; font-size: clamp(10px,0.8vw,14px); font-weight: 700; text-transform: uppercase; }
         #roleta-countdown { color: #D4AF37; font-size: clamp(20px,2.2vw,42px); font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; }
 
-        /* Layout central da roleta — tudo centrado */
         .roleta-layout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5vw;
-            flex: 1;
-            width: 100%;
-            padding: 0 4vw;
-            box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center;
+            gap: 5vw; flex: 1; width: 100%;
+            padding: 0 4vw; box-sizing: border-box;
         }
-
         .side-title {
-            color: #fff;
-            font-size: clamp(32px, 4vw, 80px);
-            font-weight: 900; text-transform: uppercase;
-            line-height: 0.9;
+            color: #fff; font-size: clamp(32px,4vw,80px); font-weight: 900;
+            text-transform: uppercase; line-height: 0.9;
             text-shadow: 0 0 20px rgba(212,175,55,0.8);
             display: flex; flex-direction: column; text-align: left;
             width: 18vw; flex-shrink: 0;
         }
         .side-title span:nth-child(1) { font-size: clamp(22px,2.8vw,54px); color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.6); }
 
-        /* Caixa da roda — usa vh para garantir que não sai do ecrã verticalmente */
+        /* ── WHEEL BOX ── tamanho quadrado baseado em vh para não sair do ecrã */
         .wheel-box {
             position: relative;
-            width: min(44vh, 44vw);
-            height: min(44vh, 44vw);
+            width: min(52vh, 48vw);
+            height: min(52vh, 48vw);
             flex-shrink: 0;
             align-self: center;
         }
@@ -147,16 +138,15 @@
         .wheel-pointer {
             position: absolute; top: -5%; left: 50%; transform: translateX(-50%);
             width: 0; height: 0;
-            border-left: 3.5% solid transparent;
-            border-right: 3.5% solid transparent;
-            border-top: 6% solid #fff;
+            border-left: 4% solid transparent;
+            border-right: 4% solid transparent;
+            border-top: 7% solid #fff;
             z-index: 10;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
         }
-
         .wheel {
             width: 100%; height: 100%; border-radius: 50%;
-            border: min(1.2vh,12px) solid #D4AF37;
+            border: min(1vh, 10px) solid #D4AF37;
             box-shadow: 0 0 50px rgba(212,175,55,0.5), inset 0 0 30px rgba(0,0,0,0.9);
             overflow: hidden;
             transform: rotate(-20deg);
@@ -170,25 +160,28 @@
             );
         }
 
-        /* Textos fora da wheel para não cortarem */
+        /* Textos das fatias — ficam DENTRO da wheel-box, com origin no centro EXATO */
         .slice-container {
-            position: absolute; inset: 0;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             transform: rotate(20deg);
             pointer-events: none; z-index: 5;
         }
         .slice-text {
             position: absolute;
-            top: 4%;
+            /* começa do topo do centro horizontal */
+            top: 5%;
             left: 50%;
-            width: 20%;
-            margin-left: -10%;
+            width: 22%;
+            margin-left: -11%;
             text-align: center;
-            font-size: clamp(9px, 1vw, 18px);
-            font-weight: 900; line-height: 1.15;
+            font-size: clamp(8px, 0.9vw, 16px);
+            font-weight: 900; line-height: 1.2;
             color: #fff; text-transform: uppercase;
             text-shadow: 1px 1px 3px #000;
-            /* origem no centro da wheel-box */
-            transform-origin: 50% calc(50vh - 4%);
+            /* ORIGIN = centro da wheel-box (50% horizontal, 50% vertical) */
+            transform-origin: 50% 45%;
         }
         .s0 { transform: rotate(0deg); }
         .s1 { transform: rotate(40deg); }
@@ -202,12 +195,12 @@
 
         .btn-spin-container { text-align: center; padding-bottom: 3vh; flex-shrink: 0; }
         .btn-spin {
-            background: #ff0055; color: #fff; border: none;
+            background: #ff0055; color: #fff; border: 4px solid transparent;
             padding: 1.5vh 5vw; font-size: clamp(16px,1.9vw,34px);
             font-weight: 900; border-radius: 50px; text-transform: uppercase;
             box-shadow: 0 0 30px rgba(255,0,85,0.6); display: inline-block;
         }
-        .btn-spin.focused { border: 4px solid #fff; transform: scale(1.05); }
+        .btn-spin.focused { border-color: #fff; transform: scale(1.05); }
 
         #roleta-resultado {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
@@ -235,13 +228,12 @@
         }
         .jackpot-prize { font-size: clamp(32px,4.8vw,80px); font-weight: 900; color: #fff; text-transform: uppercase; text-shadow: 0 0 30px rgba(255,255,255,0.8); }
         .jackpot-hint { font-size: clamp(14px,1.3vw,22px); color: #D4AF37; margin-top: 4vh; font-weight: bold; }
-        .firework { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 5px; height: 5px; border-radius: 50%; animation: bang 2s ease-out infinite; }
-        .fw2 { animation-delay: 0.5s; left: 30%; top: 40%; }
-        .fw3 { animation-delay: 1s; left: 70%; top: 60%; }
-        .fw4 { animation-delay: 1.5s; left: 80%; top: 30%; }
+        .firework { position: absolute; width: 5px; height: 5px; border-radius: 50%; animation: bang 2s ease-out infinite; }
+        .fw1 { top: 50%; left: 50%; } .fw2 { top: 40%; left: 30%; animation-delay: 0.5s; }
+        .fw3 { top: 60%; left: 70%; animation-delay: 1s; } .fw4 { top: 30%; left: 80%; animation-delay: 1.5s; }
         @keyframes bang {
             0% { box-shadow: 0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff,0 0 #fff; opacity:1; }
-            100% { box-shadow: -200px -200px #ff0055,200px -200px #00e5ff,-200px 200px #D4AF37,200px 200px #ff0055,0 -250px #fff,0 250px #fff,-250px 0 #D4AF37,250px 0 #00e5ff; opacity:0; transform:translate(-50%,-50%) scale(1.5); }
+            100% { box-shadow: -200px -200px #ff0055,200px -200px #00e5ff,-200px 200px #D4AF37,200px 200px #ff0055,0 -250px #fff,0 250px #fff,-250px 0 #D4AF37,250px 0 #00e5ff; opacity:0; transform: scale(1.5); }
         }
     </style>
 </head>
@@ -257,18 +249,8 @@
             <div class="cartas-rules">ACERTA 3 VEZES SEGUIDAS NÓS OFERECEMOS OS 3 SHOTS. EM CASO DE EMPATE ESSA JOGADA NÃO CONTA.</div>
         </div>
         <div class="cartas-layout">
-            <div class="card-wrapper">
-                <div class="card" id="card1">
-                    <div class="card-face card-back"></div>
-                    <div class="card-face card-front black" id="c1-front"></div>
-                </div>
-            </div>
-            <div class="card-wrapper">
-                <div class="card" id="card2">
-                    <div class="card-face card-back"></div>
-                    <div class="card-face card-front red" id="c2-front"></div>
-                </div>
-            </div>
+            <div class="card-wrapper"><div class="card" id="card1"><div class="card-face card-back"></div><div class="card-face card-front black" id="c1-front"></div></div></div>
+            <div class="card-wrapper"><div class="card" id="card2"><div class="card-face card-back"></div><div class="card-face card-front red" id="c2-front"></div></div></div>
         </div>
         <div class="cartas-action-area">
             <div class="cartas-status" id="cartas-status">PRONTO PARA JOGAR</div>
@@ -290,7 +272,7 @@
             <div class="wheel-box">
                 <div class="wheel-pointer"></div>
                 <div class="wheel" id="wheel"></div>
-                <div class="slice-container">
+                <div class="slice-container" id="sliceContainer">
                     <div class="slice-text s0">TENTA<br>OUTRA VEZ</div>
                     <div class="slice-text s1">OFERTA<br>1 FINO</div>
                     <div class="slice-text s2">OFERTA<br>1 RÉGUA</div>
@@ -312,7 +294,7 @@
 
     <!-- JACKPOT -->
     <div id="jackpot-container">
-        <div class="firework"></div><div class="firework fw2"></div>
+        <div class="firework fw1"></div><div class="firework fw2"></div>
         <div class="firework fw3"></div><div class="firework fw4"></div>
         <div class="jackpot-title">JACKPOT!</div>
         <div class="jackpot-prize" id="jackpot-prize-text">OFERTA 5 SHOTS</div>
@@ -339,255 +321,55 @@
     </div>
 
     <script>
-        // ── CURSOR ESCONDIDO PERMANENTEMENTE ─────────────────────────────
-        (function hideCursor() {
-            const s = document.createElement('style');
-            s.textContent = '*, *::before, *::after { cursor: none !important; }';
-            document.head.appendChild(s);
-            document.body.style.cursor = 'none';
-            document.addEventListener('mousemove', e => { e.stopPropagation(); }, true);
-        })();
+    // ════════════════════════════════════════════════════════
+    //  BLOQUEAR CURSOR COMPLETAMENTE — funciona em Hisense
+    // ════════════════════════════════════════════════════════
+    (function() {
+        // CSS cursor none em tudo
+        const s = document.createElement('style');
+        s.textContent = 'html,body,*,*::before,*::after{cursor:none!important}';
+        document.head.appendChild(s);
 
-        const TEMPO_POR_FOTO = 8000;
-        const MAX_FICHEIROS  = 50;
-        const DURACAO_ROLETA = 60 * 60;
+        // Mover o cursor para canto fora do ecrã sempre que mexer
+        document.addEventListener('mousemove', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }, true);
 
-        let currentFolder = "", currentFileIndex = 1, tryingExtensionIndex = 0;
-        let isMenuOpen = true, isCartasOpen = false, isRoletaOpen = false;
-        let currentFocusIndex = 0, imageTimer = null, isFullscreen = false;
-
-        const extensions = ['.mp4', '.jpg', '.jpeg', '.png'];
-        const menuItems   = document.querySelectorAll('.menu-item');
-        const tvMenu      = document.getElementById('tv-menu');
-        const videoPlayer = document.getElementById('video-player');
-        const imagePlayer = document.getElementById('image-player');
-        const fsHint      = document.getElementById('fs-hint');
-
-        // CARTAS
-        const cartasContainer = document.getElementById('cartas-container');
-        const card1     = document.getElementById('card1');
-        const card2     = document.getElementById('card2');
-        const c1Front   = document.getElementById('c1-front');
-        const c2Front   = document.getElementById('c2-front');
-        const cartasStatus = document.getElementById('cartas-status');
-        const cartasHint   = document.getElementById('cartas-hint');
-        const naipes = [{ smb:'♠',cor:'black' },{ smb:'♣',cor:'black' },{ smb:'♥',cor:'red' },{ smb:'♦',cor:'red' }];
-        const valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-        let etapaCartas = 0, acertos = 0, valorAtual = 0, valorNova = 0, isAnimatingCartas = false;
-
-        // ROLETA
-        const roletaContainer  = document.getElementById('roleta-container');
-        const wheel            = document.getElementById('wheel');
-        const sliceContainer   = document.querySelector('.slice-container');
-        const roletaResultado  = document.getElementById('roleta-resultado');
-        const countdownDisplay = document.getElementById('roleta-countdown');
-        const jackpotContainer = document.getElementById('jackpot-container');
-        const jackpotText      = document.getElementById('jackpot-prize-text');
-        let currentRotation = -20, isSpinning = false, roletaTimer = null, tempoRestante = DURACAO_ROLETA;
-
-        const fatias = [
-            { id:0, tipo:'TENTA', texto:'TENTA OUTRA VEZ' },
-            { id:1, tipo:'FINO',  texto:'OFERTA 1 FINO'   },
-            { id:2, tipo:'REGUA', texto:'OFERTA 1 RÉGUA'  },
-            { id:3, tipo:'TENTA', texto:'TENTA OUTRA VEZ' },
-            { id:4, tipo:'FINO',  texto:'OFERTA 1 FINO'   },
-            { id:5, tipo:'TENTA', texto:'TENTA OUTRA VEZ' },
-            { id:6, tipo:'FINO',  texto:'OFERTA 1 FINO'   },
-            { id:7, tipo:'REGUA', texto:'OFERTA 1 RÉGUA'  },
-            { id:8, tipo:'SHOTS', texto:'OFERTA 5 SHOTS'  }
-        ];
-
-        // ── FULLSCREEN ────────────────────────────────────────────────────
-        function requestFullScreen() {
-            if (isFullscreen) return;
-            const el  = document.documentElement;
-            const req = el.requestFullscreen || el.mozRequestFullScreen || el.webkitRequestFullScreen || el.msRequestFullscreen;
-            if (req) { req.call(el).catch(()=>{}); isFullscreen = true; fsHint.style.display = 'none'; }
-        }
-
-        // ── RELÓGIO ───────────────────────────────────────────────────────
-        setInterval(() => {
-            document.getElementById('clock').innerText =
-                new Date().toLocaleTimeString('pt-PT', { hour:'2-digit', minute:'2-digit' });
-        }, 1000);
-
-        // ── CARTAS ────────────────────────────────────────────────────────
-        function getRandomCard() {
-            return { index: Math.floor(Math.random()*valores.length), text: valores[Math.floor(Math.random()*valores.length)], naipe: naipes[Math.floor(Math.random()*naipes.length)] };
-        }
-        function setCardHTML(el, c) {
-            el.className = `card-face card-front ${c.naipe.cor}`;
-            el.innerHTML = `<div class="corner-top">${c.text}<br>${c.naipe.smb}</div><div class="card-value">${c.text}</div><div class="card-suit">${c.naipe.smb}</div><div class="corner-bottom">${c.text}<br>${c.naipe.smb}</div>`;
-        }
-        function avancarCartaAuto() {
-            valorAtual = valorNova;
-            c1Front.innerHTML = c2Front.innerHTML;
-            c1Front.className = c2Front.className;
-            card2.classList.remove('flipped');
-            setTimeout(() => { cartasStatus.innerText = "MAIS ALTO OU BAIXO?"; cartasStatus.className = "cartas-status"; isAnimatingCartas = false; }, 400);
-        }
-
-        // ── TECLADO ───────────────────────────────────────────────────────
-        document.addEventListener('keydown', e => {
-            requestFullScreen();
-
-            if (isRoletaOpen) {
-                if (e.key === 'ArrowLeft') { fecharRoletaCompleta(); return; }
-                if ((e.key === 'Enter' || e.key === 'OK') && !isSpinning) {
-                    (roletaResultado.classList.contains('show') || jackpotContainer.classList.contains('show'))
-                        ? fecharResultadoRoleta() : spinWheel();
-                }
-                return;
-            }
-
-            if (isCartasOpen) {
-                if (e.key === 'ArrowLeft') { fecharQualquerJogo(); return; }
-                if (isAnimatingCartas) return;
-                if (e.key === 'Enter' || e.key === 'OK') {
-                    if (etapaCartas === 0 || etapaCartas === 3) {
-                        isAnimatingCartas = true;
-                        card1.classList.remove('flipped'); card2.classList.remove('flipped');
-                        setTimeout(() => {
-                            const c1 = getRandomCard(); valorAtual = c1.index;
-                            setCardHTML(c1Front, c1); card1.classList.add('flipped');
-                            cartasStatus.innerText = "MAIS ALTO OU BAIXO?"; cartasStatus.className = "cartas-status";
-                            cartasHint.innerText = "Seta CIMA ou Seta BAIXO para apostar";
-                            acertos = 0; etapaCartas = 1; isAnimatingCartas = false;
-                        }, 300);
-                    }
-                }
-                if (etapaCartas === 1 && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
-                    isAnimatingCartas = true;
-                    const c2 = getRandomCard(); valorNova = c2.index;
-                    setCardHTML(c2Front, c2); card2.classList.add('flipped');
-                    let ok = false, empate = valorNova === valorAtual;
-                    if (!empate) ok = (e.key === 'ArrowUp' && valorNova > valorAtual) || (e.key === 'ArrowDown' && valorNova < valorAtual);
-                    setTimeout(() => {
-                        if (empate) {
-                            cartasStatus.innerText = "EMPATE! ESTÁS SAFO."; cartasStatus.className = "cartas-status";
-                            setTimeout(avancarCartaAuto, 1500);
-                        } else if (ok) {
-                            acertos++;
-                            if (acertos >= 3) { cartasStatus.innerText = "GANHASTE OS 3 SHOTS!"; cartasStatus.className = "cartas-status win-text"; cartasHint.innerText = "OK para Novo Jogo"; etapaCartas = 3; isAnimatingCartas = false; }
-                            else { cartasStatus.innerText = `ACERTO ${acertos}/3!`; cartasStatus.className = "cartas-status win-text"; setTimeout(avancarCartaAuto, 1500); }
-                        } else {
-                            cartasStatus.innerText = "ERROU! PAGA OS SHOTS."; cartasStatus.className = "cartas-status lose-text"; cartasHint.innerText = "OK para Novo Jogo"; etapaCartas = 3; isAnimatingCartas = false;
-                        }
-                    }, 600);
-                }
-                return;
-            }
-
-            if (!isMenuOpen) { openMenu(); return; }
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { currentFocusIndex = (currentFocusIndex + 1) % menuItems.length; updateMenuFocus(); }
-            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { currentFocusIndex = (currentFocusIndex - 1 + menuItems.length) % menuItems.length; updateMenuFocus(); }
-            else if (e.key === 'Enter' || e.key === 'OK') { startCategory(menuItems[currentFocusIndex].id); }
+        // Bloquear qualquer evento de rato de aparecer no DOM
+        ['mouseenter','mouseleave','mouseover','mouseout'].forEach(function(ev) {
+            document.addEventListener(ev, function(e){ e.stopPropagation(); }, true);
         });
+    })();
 
-        menuItems.forEach((item, i) => item.addEventListener('click', () => {
-            requestFullScreen(); if (isMenuOpen) { currentFocusIndex = i; updateMenuFocus(); startCategory(item.id); }
-        }));
-        document.getElementById('media-container').addEventListener('click', () => { requestFullScreen(); if (!isMenuOpen) openMenu(); });
+    // ════════════════════════════════════════════════════════
+    //  CONVERTER D-PAD DO COMANDO (mousemove) → keydown
+    //  Na Hisense as setas do comando geram mousemove.
+    //  Detectamos a DIREÇÃO do movimento e simulamos keydown.
+    // ════════════════════════════════════════════════════════
+    (function() {
+        var lastX = null, lastY = null, debounce = null;
 
-        function updateMenuFocus() { menuItems.forEach((it,i) => it.classList.toggle('focused', i === currentFocusIndex)); }
+        document.addEventListener('mousemove', function(e) {
+            if (lastX === null) { lastX = e.clientX; lastY = e.clientY; return; }
 
-        function openMenu() {
-            isMenuOpen = true; isCartasOpen = false; isRoletaOpen = false;
-            tvMenu.classList.remove('hidden');
-            cartasContainer.classList.remove('active');
-            roletaContainer.classList.remove('active');
-            fecharResultadoRoleta();
-            if (!videoPlayer.paused) videoPlayer.pause();
-            if (imageTimer) clearTimeout(imageTimer);
-        }
-        function closeMenu() { isMenuOpen = false; tvMenu.classList.add('hidden'); }
-        function fecharQualquerJogo() { openMenu(); }
+            var dx = e.clientX - lastX;
+            var dy = e.clientY - lastY;
+            lastX = e.clientX; lastY = e.clientY;
 
-        function startCategory(id) {
-            currentFolder = id; currentFileIndex = 1; tryingExtensionIndex = 0;
-            if (id === 'cartas-btn') {
-                closeMenu(); isCartasOpen = true; cartasContainer.classList.add('active');
-                videoPlayer.pause(); imagePlayer.classList.remove('active');
-                etapaCartas = 0; acertos = 0;
-                card1.classList.remove('flipped'); card2.classList.remove('flipped');
-                isAnimatingCartas = false;
-                cartasStatus.innerText = "PRONTO PARA JOGAR"; cartasStatus.className = "cartas-status";
-                cartasHint.innerText = "← Esquerda (Voltar) | OK (Começar)";
-            } else if (id === 'roleta-btn') {
-                closeMenu(); isRoletaOpen = true; roletaContainer.classList.add('active');
-                videoPlayer.pause(); imagePlayer.classList.remove('active');
-                tempoRestante = DURACAO_ROLETA; atualizarRelogioRoleta();
-                if (roletaTimer) clearInterval(roletaTimer);
-                roletaTimer = setInterval(() => { tempoRestante--; atualizarRelogioRoleta(); if (tempoRestante <= 0) fecharRoletaCompleta('noite'); }, 1000);
-            } else { closeMenu(); tryNextFile(); }
-        }
+            if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return; // ignora micro-movimentos
 
-        // ── ROLETA ────────────────────────────────────────────────────────
-        function atualizarRelogioRoleta() {
-            const m = Math.floor(tempoRestante/60), s = tempoRestante%60;
-            countdownDisplay.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        }
-        function fecharRoletaCompleta(destino = null) {
-            if (roletaTimer) clearInterval(roletaTimer);
-            isRoletaOpen = false; roletaContainer.classList.remove('active'); fecharResultadoRoleta();
-            if (destino === 'noite') { currentFocusIndex = Array.from(menuItems).findIndex(i => i.id === 'noite'); updateMenuFocus(); startCategory('noite'); }
-            else openMenu();
-        }
-        function fecharResultadoRoleta() { roletaResultado.classList.remove('show'); jackpotContainer.classList.remove('show'); }
-
-        function spinWheel() {
-            isSpinning = true;
-            const sorte = Math.random() * 100;
-            let tipo = sorte < 40 ? 'TENTA' : sorte < 70 ? 'FINO' : sorte < 90 ? 'REGUA' : 'SHOTS';
-            const possiveis = fatias.filter(f => f.tipo === tipo);
-            const vencedora = possiveis[Math.floor(Math.random() * possiveis.length)];
-            const anguloAlvo = 360 - vencedora.id * 40;
-            const voltas = (Math.floor(Math.random()*5) + 6) * 360;
-            const rotacaoFinal = (currentRotation - currentRotation%360) + voltas + anguloAlvo - 20;
-
-            wheel.style.transform = `rotate(${rotacaoFinal}deg)`;
-            sliceContainer.style.transform = `rotate(${rotacaoFinal + 20}deg)`;
-            currentRotation = rotacaoFinal;
-
-            setTimeout(() => {
-                isSpinning = false;
-                if (tipo === 'REGUA' || tipo === 'SHOTS') {
-                    jackpotText.innerText = vencedora.texto;
-                    jackpotContainer.classList.add('show');
+            clearTimeout(debounce);
+            debounce = setTimeout(function() {
+                var key;
+                if (Math.abs(dx) >= Math.abs(dy)) {
+                    key = dx > 0 ? 'ArrowRight' : 'ArrowLeft';
                 } else {
-                    roletaResultado.innerHTML = `
-                        <div style="font-size:clamp(12px,1.5vw,26px);color:#aaa;margin-bottom:1vh;">SAIU:</div>
-                        <div>${vencedora.texto}</div>
-                        <div style="font-size:clamp(11px,1vw,18px);margin-top:2.5vh;color:#D4AF37;">Pressione OK para continuar</div>`;
-                    roletaResultado.classList.add('show');
+                    key = dy > 0 ? 'ArrowDown' : 'ArrowUp';
                 }
-            }, 6000);
-        }
+                var event = new KeyboardEvent('keydown', { key: key, bubbles: true });
+                document.dispatchEvent(event);
+            }, 40);
+        }, true);
 
-        // ── MEDIA ─────────────────────────────────────────────────────────
-        function tryNextFile() {
-            if (isMenuOpen || isCartasOpen || isRoletaOpen) return;
-            if (imageTimer) clearTimeout(imageTimer);
-            if (currentFileIndex > MAX_FICHEIROS) currentFileIndex = 1;
-            const ext = extensions[tryingExtensionIndex];
-            const path = `${currentFolder}/${currentFileIndex}${ext}`;
-            if (ext === '.mp4') {
-                imagePlayer.classList.remove('active');
-                videoPlayer.src = path; videoPlayer.load();
-                videoPlayer.onloadeddata = () => { videoPlayer.classList.add('active'); videoPlayer.play().catch(()=>setTimeout(advanceToNextIndex,1000)); };
-                videoPlayer.onended = () => advanceToNextIndex();
-                videoPlayer.onerror = () => tryNextExtension();
-            } else {
-                videoPlayer.classList.remove('active'); videoPlayer.pause();
-                imagePlayer.src = path;
-                imagePlayer.onload  = () => { imagePlayer.classList.add('active'); imageTimer = setTimeout(advanceToNextIndex, TEMPO_POR_FOTO); };
-                imagePlayer.onerror = () => tryNextExtension();
-            }
-        }
-        function tryNextExtension() { tryingExtensionIndex++; tryingExtensionIndex >= extensions.length ? advanceToNextIndex() : tryNextFile(); }
-        function advanceToNextIndex() { currentFileIndex++; tryingExtensionIndex = 0; tryNextFile(); }
-
-        updateMenuFocus();
-    </script>
-</body>
-</html>
+        // Cliq
