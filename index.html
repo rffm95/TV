@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cheers O Bar - Roleta Final</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
 
         * { cursor: none !important; user-select: none; outline: none !important; }
         html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
@@ -21,9 +21,9 @@
         .side-title span { color: #ff0055; }
 
         /* CONTENTOR DA RODA */
-        .wheel-box { position: relative; width: 68vh; height: 68vh; }
+        .wheel-box { position: relative; width: 70vh; height: 70vh; }
         
-        /* SETA */
+        /* SETA (PONTEIRO) */
         .pointer { 
             position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; border-left: 25px solid transparent; 
@@ -43,44 +43,47 @@
             );
         }
 
-        /* TEXTO ALINHADO NAS FATIAS */
-        .slice-text {
+        /* TEXTO DAS FATIAS - ALINHAMENTO CORRIGIDO */
+        .slice-text-container {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 45%; /* Empurra o texto para a borda */
+            width: 50%; /* Metade do círculo */
+            height: 2px;
             transform-origin: left center;
-            margin-top: -15px; /* Metade da altura da linha para centrar verticalmente na fatia */
-            padding-left: 12%; /* Afasta o texto do centro dourado */
-            color: #fff;
-            font-weight: 900;
-            font-size: 1.8vh;
-            text-transform: uppercase;
-            text-align: center;
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-shadow: 2px 2px 4px #000;
+            justify-content: flex-end; /* Empurra o texto para a borda */
+        }
+
+        .slice-text {
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.8vh; /* Tamanho para TV 85" */
+            text-transform: uppercase;
+            padding-right: 35px; /* Margem da borda dourada */
+            text-shadow: 2px 2px 5px #000;
             white-space: nowrap;
         }
 
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.95); border: 5px solid #D4AF37; padding: 5vh;
-            border-radius: 20px; color: #fff; font-size: 5vw; font-weight: 900;
+            background: rgba(0,0,0,0.98); border: 6px solid #D4AF37; padding: 6vh;
+            border-radius: 25px; color: #fff; font-size: 5vw; font-weight: 900;
             text-align: center; z-index: 200; transition: transform 0.5s;
+            box-shadow: 0 0 100px #000;
         }
         #resultado.show { transform: translate(-50%, -50%) scale(1); }
 
         .footer-hint { margin-bottom: 5vh; color: #D4AF37; font-size: 2vw; font-weight: 700; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     </style>
 </head>
 <body>
 
     <div id="roleta-screen">
-        <div style="margin-top: 5vh; color: #fff; font-size: 2vw; font-weight: 900; text-transform: uppercase; border: 2px solid #ff0055; padding: 10px 30px; border-radius: 10px;">
-            Cheers O Bar - Pede uma Régua e Gira!
+        <div style="margin-top: 5vh; color: #fff; font-size: 2.5vw; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid #ff0055; padding-bottom: 10px;">
+            CHEERS O BAR
         </div>
 
         <div class="main-layout">
@@ -94,7 +97,7 @@
             <div class="side-title" style="text-align: right;">GANHA<br><span>PRÉMIOS</span></div>
         </div>
 
-        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO PARA GIRAR!</div>
+        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO DO COMANDO!</div>
     </div>
 
     <div id="resultado"></div>
@@ -119,25 +122,26 @@
             { id: 8, texto: 'JACKPOT: 5 SHOTS!' }
         ];
 
-        // GERAÇÃO DOS TEXTOS COM ROTAÇÃO CORRIGIDA
+        // GERAÇÃO DOS TEXTOS COM ALINHAMENTO RADIAL
         fatias.forEach((f, i) => {
-            const span = document.createElement('div');
+            const container = document.createElement('div');
+            container.className = 'slice-text-container';
+            
+            // Rodar o container para o centro da fatia (cada fatia 40deg, +20deg para centrar)
+            const angulo = (i * 40) + 20; 
+            container.style.transform = `rotate(${angulo}deg)`;
+            
+            const span = document.createElement('span');
             span.className = 'slice-text';
-            
-            // Cada fatia tem 40 graus. 
-            // Somamos 20 graus para o texto ficar no MEIO da fatia, não na linha divisória.
-            const anguloFatia = (i * 40) + 20; 
-            span.style.transform = `rotate(${anguloFatia}deg)`;
-            
             span.innerText = f.texto;
-            wheel.appendChild(span);
+            
+            container.appendChild(span);
+            wheel.appendChild(container);
         });
 
         function girar() {
             if (aRodar) {
-                if (resultado.classList.contains('show')) {
-                    resultado.classList.remove('show');
-                }
+                if (resultado.classList.contains('show')) resultado.classList.remove('show');
                 return;
             }
 
@@ -148,28 +152,26 @@
             const sorte = Math.random() * 100;
             let ganhador;
             if (sorte < 5) ganhador = fatias[8]; // Jackpot
-            else if (sorte < 30) ganhador = fatias[Math.random() > 0.5 ? 2 : 7]; // Régua
-            else if (sorte < 70) ganhador = fatias[Math.random() > 0.5 ? 1 : 4]; // Fino
-            else ganhador = fatias[Math.random() > 0.5 ? 0 : 3]; // Tenta
+            else if (sorte < 30) ganhador = fatias[Math.random() > 0.5 ? 2 : 7];
+            else if (sorte < 70) ganhador = fatias[Math.random() > 0.5 ? 1 : 4];
+            else ganhador = fatias[Math.random() > 0.5 ? 0 : 3];
 
-            // Alinhamento do prémio com o ponteiro (topo)
-            // A fatia 0 começa em 0deg. Para a fatia X ficar no topo (270deg no círculo trigonométrico do CSS)
-            const anguloFinalFatia = (ganhador.id * 40) + 20;
-            const voltas = (Math.floor(Math.random() * 5) + 10) * 360;
+            // Cálculo para parar debaixo da seta (topo = 270deg offset)
+            const anguloFatia = (ganhador.id * 40) + 20;
+            const voltasExtra = (Math.floor(Math.random() * 4) + 10) * 360;
             
-            // O cálculo garante que a fatia sorteada pare debaixo da seta branca
-            rotacaoTotal = voltas + (360 - anguloFinalFatia);
-            
+            rotacaoTotal = voltasExtra + (360 - anguloFatia);
             wheel.style.transform = `rotate(${rotacaoTotal}deg)`;
 
             setTimeout(() => {
                 aRodar = false;
-                resultado.innerHTML = ganhador.texto + "<br><span style='font-size:2vw; color:#888;'>Carrega para continuar</span>";
+                resultado.innerHTML = ganhador.texto + "<br><span style='font-size:2vw; color:#888; text-transform: none;'>Prime qualquer tecla para continuar</span>";
                 resultado.classList.add('show');
                 hint.style.visibility = 'visible';
-            }, 6000);
+            }, 6200);
         }
 
+        // COMANDO HISENSE (VIDAA)
         window.addEventListener('keydown', (e) => {
             e.preventDefault();
             girar();
