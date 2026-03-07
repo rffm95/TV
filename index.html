@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta Visual Pura</title>
+    <title>Cheers O Bar - Roleta Oficial</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
         
         * { cursor: none !important; user-select: none; box-sizing: border-box; outline: none; }
         body { 
@@ -18,6 +18,7 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
+            width: 100vw;
         }
 
         /* Banner Superior */
@@ -26,112 +27,122 @@
             padding: 15px 40px;
             border-radius: 20px;
             color: #fff;
-            font-size: 2.5vw;
-            margin-bottom: 30px;
+            font-size: 1.8vw;
+            margin-bottom: 20px;
             text-transform: uppercase;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
         }
 
-        .wheel-box { position: relative; width: 85vh; height: 85vh; }
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            width: 95%;
+            gap: 20px;
+        }
 
-        /* A SETA - Único Ponto de Verdade */
+        /* Coluna de Prémios (Esquerda) */
+        .premios-lista {
+            color: #fff;
+            text-align: left;
+            min-width: 200px;
+        }
+        .premios-lista h3 {
+            color: #D4AF37;
+            font-size: 1.5vw;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .premios-lista p {
+            font-size: 1.2vw;
+            margin: 5px 0;
+            font-weight: 700;
+            border-left: 3px solid #ff0055;
+            padding-left: 10px;
+        }
+
+        /* Box da Roleta */
+        .wheel-box { 
+            position: relative; 
+            width: 70vh; 
+            height: 70vh; 
+            flex-shrink: 0; 
+        }
+
         .pointer { 
             position: absolute; 
-            top: -25px; 
+            top: -20px; 
             left: 50%; 
             transform: translateX(-50%);
-            width: 0; 
-            height: 0; 
-            border-left: 35px solid transparent; 
-            border-right: 35px solid transparent; 
-            border-top: 70px solid #fff; 
+            width: 0; height: 0; 
+            border-left: 30px solid transparent; 
+            border-right: 30px solid transparent; 
+            border-top: 60px solid #fff; 
             z-index: 100;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8));
         }
 
         .wheel {
-            width: 100%; 
-            height: 100%; 
+            width: 100%; height: 100%; 
             border-radius: 50%; 
             border: 15px solid #D4AF37;
             position: relative; 
             overflow: hidden;
-            /* Transição suave e longa para o mistério */
             transition: transform 6s cubic-bezier(0.15, 0, 0, 1);
             background: conic-gradient(
                 from -20deg,
-                #D4AF37 0deg 40deg,    /* Jackpot */
-                #ff0055 40deg 80deg,   /* Régua */
-                #111 80deg 120deg,     /* Tenta */
-                #ff0055 120deg 160deg,  /* Fino */
-                #111 160deg 200deg,    /* Tenta */
-                #ff0055 200deg 240deg,  /* Fino */
-                #111 240deg 280deg,    /* Tenta */
-                #ff0055 280deg 320deg,  /* Fino */
-                #111 320deg 360deg     /* Tenta */
+                #D4AF37 0deg 40deg, #ff0055 40deg 80deg, #111 80deg 120deg,
+                #ff0055 120deg 160deg, #111 160deg 200deg, #ff0055 200deg 240deg,
+                #111 240deg 280deg, #ff0055 280deg 320deg, #111 320deg 360deg
             );
         }
 
         .slice-text {
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            width: 50%; 
+            position: absolute; top: 50%; left: 50%; width: 45%; 
             transform-origin: left center;
-            color: #fff; 
-            font-size: 1.8vh; 
-            padding-left: 10vh; 
-            text-shadow: 2px 2px 5px #000; 
-            font-weight: 900;
-            text-transform: uppercase;
+            color: #fff; font-size: 1.4vh; padding-left: 7vh; 
+            text-shadow: 2px 2px 5px #000; font-weight: 900;
+            text-transform: uppercase; white-space: nowrap;
         }
 
-        /* Layout lateral igual à tua imagem */
-        .main-container {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-        }
-
+        /* Título Direita */
         .side-title {
-            color: #fff;
-            font-size: 5vw;
-            font-weight: 900;
-            line-height: 1;
-            text-shadow: 0 0 20px rgba(255,0,85,0.5);
+            color: #fff; font-size: 3.5vw; font-weight: 900; line-height: 1.1;
+            text-align: right;
         }
         .side-title span { color: #ff0055; }
     </style>
 </head>
 <body>
 
-    <div class="banner">CHEERS O BAR - PEDE UMA RÉGUA E GIRA!</div>
+    <div class="banner">PEDE UMA RÉGUA OU UM PACK E GIRA!</div>
 
     <div class="main-container">
-        <div class="side-title">ROLETA<br><span>DO CHEERS</span></div>
+        <div class="premios-lista">
+            <h3>PRÉMIOS POSSÍVEIS:</h3>
+            <p>5 SHOTS (JACKPOT)</p>
+            <p>1 RÉGUA</p>
+            <p>1 FINO</p>
+            <p>TENTA OUTRA VEZ</p>
+        </div>
         
         <div class="wheel-box">
             <div class="pointer"></div>
             <div id="wheel" class="wheel"></div>
         </div>
 
-        <div class="side-title" style="text-align: right;">GANHA<br><span>PRÉMIOS</span></div>
+        <div class="side-title">ROLETA<br><span>DO CHEERS</span></div>
     </div>
 
     <script>
         const wheel = document.getElementById('wheel');
         let aRodar = false;
-        let rotacaoAcumulada = 0;
+        let rotacaoTotal = 0;
 
         const fatias = [
-            'JACKPOT: 5 SHOTS!', // 0
-            'OFERTA 1 RÉGUA',    // 1
-            'TENTA OUTRA VEZ',   // 2
-            'OFERTA 1 FINO',     // 3
-            'TENTA OUTRA VEZ',   // 4
-            'OFERTA 1 FINO',     // 5
-            'TENTA OUTRA VEZ',   // 6
-            'OFERTA 1 FINO',     // 7
-            'TENTA OUTRA VEZ'    // 8
+            'JACKPOT: 5 SHOTS!', 'OFERTA 1 RÉGUA', 'TENTA OUTRA VEZ',
+            'OFERTA 1 FINO', 'TENTA OUTRA VEZ', 'OFERTA 1 FINO',
+            'TENTA OUTRA VEZ', 'OFERTA 1 FINO', 'TENTA OUTRA VEZ'
         ];
 
         fatias.forEach((texto, i) => {
@@ -144,10 +155,8 @@
 
         function girar() {
             if (aRodar) return;
-            
             aRodar = true;
 
-            // Sorteio (Jackpot 10%, Régua 20%)
             const r = Math.random() * 100;
             let idx;
             if (r < 10) idx = 0; 
@@ -155,19 +164,14 @@
             else if (r < 65) idx = [3, 5, 7][Math.floor(Math.random() * 3)];
             else idx = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
 
-            // Cálculo para a fatia cair na seta (Topo)
-            // Somamos à rotação atual para a roleta continuar de onde parou
-            const voltasExtras = 10 * 360; 
-            const compensacao = (360 - (idx * 40));
-            
-            // Importante: Zeramos a rotação internamente se o número for muito alto para manter a precisão
-            rotacaoAcumulada += voltasExtras + (compensacao - (rotacaoAcumulada % 360));
+            const voltas = 10 * 360; 
+            const anguloFatia = idx * 40;
+            const destino = voltas + (360 - (rotacaoTotal % 360)) + (360 - anguloFatia);
+            rotacaoTotal += destino;
 
-            wheel.style.transform = `rotate(${rotacaoAcumulada}deg)`;
+            wheel.style.transform = `rotate(${rotacaoTotal}deg)`;
 
-            setTimeout(() => {
-                aRodar = false;
-            }, 6500);
+            setTimeout(() => { aRodar = false; }, 6100);
         }
 
         window.addEventListener('keydown', girar);
