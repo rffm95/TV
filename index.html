@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta Final 100% Sincronizada</title>
+    <title>Cheers O Bar - Roleta Oficial Sincronizada</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
 
@@ -14,7 +14,7 @@
             position: absolute; width: 100vw; height: 100vh;
             background: radial-gradient(circle, #1a000a 0%, #000 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            padding: 2vh 0;
+            padding: 3vh 0;
         }
 
         .main-layout { display: flex; align-items: center; justify-content: center; gap: 5vw; flex: 1; width: 100%; }
@@ -23,29 +23,28 @@
 
         .wheel-box { position: relative; width: 75vh; height: 75vh; }
         
-        /* SETA (PONTEIRO) NO TOPO */
+        /* SETA BRANCA NO TOPO */
         .pointer { 
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; border-left: 30px solid transparent; 
             border-right: 30px solid transparent; border-top: 60px solid #fff; z-index: 100;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
         }
 
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; border: 15px solid #D4AF37;
             position: relative; overflow: hidden;
             transition: transform 7s cubic-bezier(0.1, 0, 0.1, 1);
-            /* Definição rigorosa: 9 fatias de 40 graus cada */
+            /* CORES DAS FATIAS (9 fatias de 40 graus) */
             background: conic-gradient(
-                #D4AF37 0deg 40deg,   /* 0: Jackpot */
-                #ff0055 40deg 80deg,  /* 1: Régua */
-                #111 80deg 120deg,    /* 2: Tenta */
-                #ff0055 120deg 160deg, /* 3: Fino */
-                #111 160deg 200deg,   /* 4: Tenta */
-                #ff0055 200deg 240deg, /* 5: Fino */
-                #111 240deg 280deg,   /* 6: Tenta */
-                #ff0055 280deg 320deg, /* 7: Fino */
-                #111 320deg 360deg    /* 8: Tenta */
+                #D4AF37 0deg 40deg,    /* 0: Jackpot */
+                #ff0055 40deg 80deg,   /* 1: Régua */
+                #111 80deg 120deg,     /* 2: Tenta */
+                #ff0055 120deg 160deg,  /* 3: Fino */
+                #111 160deg 200deg,    /* 4: Tenta */
+                #ff0055 200deg 240deg,  /* 5: Fino */
+                #111 240deg 280deg,    /* 6: Tenta */
+                #ff0055 280deg 320deg,  /* 7: Fino */
+                #111 320deg 360deg     /* 8: Tenta */
             );
         }
 
@@ -61,21 +60,21 @@
 
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.95); border: 10px solid #D4AF37; padding: 7vh;
+            background: rgba(0,0,0,0.98); border: 10px solid #D4AF37; padding: 7vh;
             border-radius: 40px; color: #fff; font-size: 5vw; font-weight: 900;
             text-align: center; z-index: 200; transition: transform 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.4);
-            box-shadow: 0 0 100px rgba(0,0,0,1);
+            box-shadow: 0 0 100px #000;
         }
         #resultado.show { transform: translate(-50%, -50%) scale(1); }
 
-        .footer-hint { margin-bottom: 3vh; color: #D4AF37; font-size: 2vw; font-weight: 700; animation: flash 1s infinite; }
-        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .footer-hint { margin-bottom: 3vh; color: #D4AF37; font-size: 2vw; font-weight: 700; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     </style>
 </head>
 <body>
 
     <div id="roleta-screen">
-        <div style="color: #fff; font-size: 2.5vw; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid #ff0055; padding: 0 40px 10px 40px;">
+        <div style="color: #fff; font-size: 2.5vw; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid #ff0055; padding-bottom: 10px;">
             CHEERS O BAR
         </div>
 
@@ -88,7 +87,7 @@
             <div class="side-title" style="text-align: right;">GANHA<br><span>PRÉMIOS</span></div>
         </div>
 
-        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO PARA GIRAR!</div>
+        <div id="hint" class="footer-hint">CARREGA NO COMANDO PARA GIRAR!</div>
     </div>
 
     <div id="resultado"></div>
@@ -99,26 +98,25 @@
         const hint = document.getElementById('hint');
         
         let aRodar = false;
-        let totalRotation = 0;
+        let rotacaoAcumulada = 0;
 
-        // MAPA DE FATIAS (Deve bater 100% com o conic-gradient do CSS)
+        // ESTA LISTA TEM DE BATER CERTO COM O CONIC-GRADIENT DO CSS ACIMA
         const fatias = [
-            { texto: 'JACKPOT: 5 SHOTS!', perde: false }, // Fatia 0 (Dourada)
-            { texto: 'OFERTA 1 RÉGUA', perde: false },     // Fatia 1 (Rosa)
-            { texto: 'TENTA OUTRA VEZ', perde: true },    // Fatia 2 (Preta)
-            { texto: 'OFERTA 1 FINO', perde: false },      // Fatia 3 (Rosa)
-            { texto: 'TENTA OUTRA VEZ', perde: true },    // Fatia 4 (Preta)
-            { texto: 'OFERTA 1 FINO', perde: false },      // Fatia 5 (Rosa)
-            { texto: 'TENTA OUTRA VEZ', perde: true },    // Fatia 6 (Preta)
-            { texto: 'OFERTA 1 FINO', perde: false },      // Fatia 7 (Rosa)
-            { texto: 'TENTA OUTRA VEZ', perde: true }     // Fatia 8 (Preta)
+            { texto: 'JACKPOT: 5 SHOTS!', perde: false }, // 0: Dourado
+            { texto: 'OFERTA 1 RÉGUA', perde: false },    // 1: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true },   // 2: Preto
+            { texto: 'OFERTA 1 FINO', perde: false },     // 3: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true },   // 4: Preto
+            { texto: 'OFERTA 1 FINO', perde: false },     // 5: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true },   // 6: Preto
+            { texto: 'OFERTA 1 FINO', perde: false },     // 7: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true }    // 8: Preto
         ];
 
-        // Posicionar textos
+        // Criar textos
         fatias.forEach((f, i) => {
             const container = document.createElement('div');
             container.className = 'slice-text-container';
-            // Rodamos o texto para o centro de cada fatia de 40 graus
             container.style.transform = `rotate(${(i * 40) + 20}deg)`;
             const span = document.createElement('span');
             span.className = 'slice-text';
@@ -129,9 +127,7 @@
 
         function girar() {
             if (aRodar) {
-                if (resultado.classList.contains('show')) {
-                    resultado.classList.remove('show');
-                }
+                if (resultado.classList.contains('show')) resultado.classList.remove('show');
                 return;
             }
 
@@ -139,48 +135,41 @@
             resultado.classList.remove('show');
             hint.style.visibility = 'hidden';
 
-            // 1. SORTEIO (Jackpot em 10%)
+            // 1. SORTEIO (Jackpot 10%, Régua 20%, Finos 35%, Tenta 35%)
             const sorte = Math.random() * 100;
             let index;
-            if (sorte < 10) index = 0;              // 10% Jackpot
-            else if (sorte < 30) index = 1;         // 20% Régua
-            else if (sorte < 65) index = [3, 5, 7][Math.floor(Math.random() * 3)]; // 35% Finos
-            else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)]; // 35% Tenta
+            if (sorte < 10) index = 0; 
+            else if (sorte < 30) index = 1; 
+            else if (sorte < 65) index = [3, 5, 7][Math.floor(Math.random() * 3)]; 
+            else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
 
             const ganhador = fatias[index];
 
-            // 2. MATEMÁTICA DE PARAGEM (SINCRONIZAÇÃO ABSOLUTA)
-            // O centro da fatia escolhida é (index * 40) + 20.
-            // Para trazer esse centro para o TOPO (0 graus), rodamos 360 - centro.
-            const targetDegrees = 360 - ((index * 40) + 20);
+            // 2. MATEMÁTICA DE PARAGEM (Calcula o centro da fatia escolhida)
+            const centroFatia = (index * 40) + 20;
+            const anguloDestino = 360 - centroFatia;
             
-            // Damos pelo menos 10 voltas completas para o espetáculo
-            const extraSpins = 10 * 360;
-            
-            // Somamos à rotação atual para a roda nunca "voltar atrás"
-            // O modulo garante que sabemos onde a roda parou na última vez
-            const currentModulo = totalRotation % 360;
-            totalRotation += (360 - currentModulo) + extraSpins + targetDegrees;
+            // Define o número de voltas e garante que o movimento é sempre para a frente
+            const voltasExtras = 10 * 360; 
+            const baseDeRotacao = Math.ceil(rotacaoAcumulada / 360) * 360;
+            rotacaoAcumulada = baseDeRotacao + voltasExtras + anguloDestino;
 
-            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            wheel.style.transform = `rotate(${rotacaoAcumulada}deg)`;
 
-            // 3. ANÚNCIO DO RESULTADO
+            // 3. MOSTRAR RESULTADO
             setTimeout(() => {
                 aRodar = false;
-                const cor = ganhador.perde ? "#ff0055" : "#D4AF37";
-                const prefixo = ganhador.perde ? "PERDESTE" : "GANHASTE";
+                const status = ganhador.perde ? 
+                    "<span style='color: #ff0055;'>PERDESTE:</span>" : 
+                    "<span style='color: #D4AF37;'>GANHASTE:</span>";
                 
-                resultado.innerHTML = `
-                    <span style="color:${cor}; text-shadow: 0 0 20px ${cor};">${prefixo}:</span><br>
-                    ${ganhador.texto}<br>
-                    <span style="font-size: 1.5vw; color: #666; font-weight: 400; text-transform: none;">Carrega para continuar</span>
-                `;
+                resultado.innerHTML = `${status}<br>${ganhador.texto}<br><span style='font-size:1.5vw; color:#666; text-transform:none; font-weight:400;'>Prime para continuar</span>`;
                 resultado.classList.add('show');
                 hint.style.visibility = 'visible';
-            }, 7200); // 7 segundos de suspense
+            }, 7200); 
         }
 
-        // CONTROLO PELO COMANDO DA TV
+        // CONTROLOS
         window.addEventListener('keydown', (e) => { e.preventDefault(); girar(); });
         document.addEventListener('mousedown', (e) => { e.preventDefault(); girar(); });
     </script>
