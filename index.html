@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Versão Final</title>
+    <title>Cheers O Bar - Roleta 100% Sincronizada</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
-        * { cursor: none !important; user-select: none; box-sizing: border-box; }
+        * { cursor: none !important; user-select: none; box-sizing: border-box; outline: none; }
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
         #roleta-screen { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a000a 0%, #000 100%); }
         
-        .wheel-box { position: relative; width: 75vh; height: 75vh; }
+        .wheel-box { position: relative; width: 80vh; height: 80vh; }
         
-        /* A SETA É O PONTO DE VERDADE */
+        /* A SETA - Ponto fixo de verdade */
         .pointer { 
             position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 25px solid transparent; 
-            border-right: 25px solid transparent; border-top: 50px solid #fff; z-index: 100;
+            width: 0; height: 0; border-left: 30px solid transparent; 
+            border-right: 30px solid transparent; border-top: 60px solid #fff; z-index: 100;
         }
 
         .wheel {
-            width: 100%; height: 100%; border-radius: 50%; border: 12px solid #D4AF37;
+            width: 100%; height: 100%; border-radius: 50%; border: 15px solid #D4AF37;
             position: relative; overflow: hidden;
-            /* Transição suave de 5 segundos */
-            transition: transform 5s cubic-bezier(0.2, 0, 0, 1);
+            transition: transform 5s cubic-bezier(0.15, 0, 0, 1);
+            /* Alinhamento exato com a lista de fatias */
             background: conic-gradient(
                 from -20deg,
                 #D4AF37 0deg 40deg,    /* 0: Jackpot */
@@ -42,12 +42,14 @@
         .slice-text {
             position: absolute; top: 50%; left: 50%; width: 50%; transform-origin: left center;
             color: #fff; font-size: 1.8vh; padding-left: 12vh; text-shadow: 2px 2px 4px #000; font-weight: 900;
+            text-transform: uppercase;
         }
 
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.95); border: 8px solid #D4AF37; padding: 60px;
-            border-radius: 30px; color: #fff; font-size: 5vw; text-align: center; z-index: 200; transition: transform 0.4s;
+            background: rgba(0,0,0,0.98); border: 10px solid #D4AF37; padding: 60px;
+            border-radius: 40px; color: #fff; font-size: 5vw; text-align: center; z-index: 200; transition: transform 0.4s;
+            box-shadow: 0 0 100px #000;
         }
         #resultado.show { transform: translate(-50%, -50%) scale(1); }
     </style>
@@ -67,34 +69,38 @@
         const resultado = document.getElementById('resultado');
         let aRodar = false;
 
-        const listaPremios = [
-            { t: 'JACKPOT: 5 SHOTS!', w: true },  // 0
-            { t: 'OFERTA 1 RÉGUA', w: true },     // 1
-            { t: 'TENTA OUTRA VEZ', w: false },   // 2
-            { t: 'OFERTA 1 FINO', w: true },      // 3
-            { t: 'TENTA OUTRA VEZ', w: false },   // 4
-            { t: 'OFERTA 1 FINO', w: true },      // 5
-            { t: 'TENTA OUTRA VEZ', w: false },   // 6
-            { t: 'OFERTA 1 FINO', w: true },      // 7
-            { t: 'TENTA OUTRA VEZ', w: false }    // 8
+        // ESTA LISTA É A LEI: O Index 1 É A RÉGUA, O Index 3 É O FINO.
+        const fatias = [
+            { t: 'JACKPOT: 5 SHOTS!', w: true },  // 0 (Dourado)
+            { t: 'OFERTA 1 RÉGUA', w: true },     // 1 (Rosa)
+            { t: 'TENTA OUTRA VEZ', w: false },   // 2 (Preto)
+            { t: 'OFERTA 1 FINO', w: true },      // 3 (Rosa)
+            { t: 'TENTA OUTRA VEZ', w: false },   // 4 (Preto)
+            { t: 'OFERTA 1 FINO', w: true },      // 5 (Rosa)
+            { t: 'TENTA OUTRA VEZ', w: false },   // 6 (Preto)
+            { t: 'OFERTA 1 FINO', w: true },      // 7 (Rosa)
+            { t: 'TENTA OUTRA VEZ', w: false }    // 8 (Preto)
         ];
 
-        // Posicionar textos
-        listaPremios.forEach((p, i) => {
-            const el = document.createElement('div');
-            el.className = 'slice-text';
-            el.style.transform = `rotate(${i * 40}deg)`;
-            el.innerText = p.t;
-            wheel.appendChild(el);
+        // Criar textos - Alinhamento absoluto
+        fatias.forEach((f, i) => {
+            const div = document.createElement('div');
+            div.className = 'slice-text';
+            div.style.transform = `rotate(${i * 40}deg)`;
+            div.innerText = f.t;
+            wheel.appendChild(div);
         });
 
         function girar() {
-            if (aRodar) { resultado.classList.remove('show'); return; }
+            if (aRodar) {
+                resultado.classList.remove('show');
+                return;
+            }
             
             aRodar = true;
             resultado.classList.remove('show');
 
-            // 1. SORTEIO (Jackpot 10%)
+            // 1. SORTEIO (Jackpot 10%, Régua 20%)
             const r = Math.random() * 100;
             let index;
             if (r < 10) index = 0; 
@@ -102,27 +108,26 @@
             else if (r < 65) index = [3, 5, 7][Math.floor(Math.random() * 3)];
             else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
 
-            // 2. RESET INSTANTÂNEO (Truque para manter sincronia infinita)
+            // 2. RESET INSTANTÂNEO PARA O PONTO ZERO
             wheel.style.transition = 'none';
             wheel.style.transform = 'rotate(0deg)';
-            
-            // Forçamos o navegador a processar o reset antes de girar
-            void wheel.offsetWidth;
+            void wheel.offsetWidth; // Força o reset
 
-            // 3. GIRAR (10 voltas + ângulo do prémio)
-            // Calculamos o ângulo para a fatia X parar no topo: (360 - (index * 40))
-            const anguloFinal = (360 * 10) + (360 - (index * 40));
+            // 3. CÁLCULO DA ROTAÇÃO (Sentido anti-horário para alinhar com o conic-gradient)
+            // Para a fatia [index] ficar no topo, rodamos -(index * 40)
+            const voltas = 10 * 360;
+            const destinoFinal = voltas - (index * 40);
             
-            wheel.style.transition = 'transform 5s cubic-bezier(0.15, 0, 0.05, 1)';
-            wheel.style.transform = `rotate(${anguloFinal}deg)`;
+            wheel.style.transition = 'transform 5s cubic-bezier(0.15, 0, 0, 1)';
+            wheel.style.transform = `rotate(${destinoFinal}deg)`;
 
-            // 4. MOSTRAR RESULTADO
+            // 4. RESULTADO (Puxa exatamente o texto do index sorteado)
             setTimeout(() => {
-                const p = listaPremios[index];
-                const cor = p.w ? "#D4AF37" : "#ff0055";
-                const tit = p.w ? "GANHASTE:" : "PERDESTE:";
+                const ganhou = fatias[index];
+                const cor = ganhou.w ? "#D4AF37" : "#ff0055";
+                const label = ganhou.w ? "GANHASTE:" : "PERDESTE:";
                 
-                resultado.innerHTML = `<b style="color:${cor}">${tit}</b><br>${p.t}`;
+                resultado.innerHTML = `<b style="color:${cor}">${label}</b><br>${ganhou.t}`;
                 resultado.classList.add('show');
                 aRodar = false;
             }, 5200);
