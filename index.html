@@ -21,7 +21,6 @@
             width: 100vw;
         }
 
-        /* Banner Superior */
         .banner {
             border: 4px solid #ff0055;
             padding: 15px 40px;
@@ -42,11 +41,10 @@
             gap: 20px;
         }
 
-        /* Coluna de Prémios (Esquerda) */
         .premios-lista {
             color: #fff;
             text-align: left;
-            min-width: 200px;
+            min-width: 250px;
         }
         .premios-lista h3 {
             color: #D4AF37;
@@ -56,30 +54,30 @@
         }
         .premios-lista p {
             font-size: 1.2vw;
-            margin: 5px 0;
+            margin: 8px 0;
             font-weight: 700;
-            border-left: 3px solid #ff0055;
-            padding-left: 10px;
+            border-left: 4px solid #ff0055;
+            padding-left: 12px;
         }
 
-        /* Box da Roleta */
         .wheel-box { 
             position: relative; 
-            width: 70vh; 
-            height: 70vh; 
+            width: 75vh; 
+            height: 75vh; 
             flex-shrink: 0; 
         }
 
         .pointer { 
             position: absolute; 
-            top: -20px; 
+            top: -25px; 
             left: 50%; 
             transform: translateX(-50%);
             width: 0; height: 0; 
-            border-left: 30px solid transparent; 
-            border-right: 30px solid transparent; 
-            border-top: 60px solid #fff; 
+            border-left: 35px solid transparent; 
+            border-right: 35px solid transparent; 
+            border-top: 70px solid #fff; 
             z-index: 100;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
         }
 
         .wheel {
@@ -98,14 +96,29 @@
         }
 
         .slice-text {
-            position: absolute; top: 50%; left: 50%; width: 45%; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            width: 50%; 
+            height: 0; /* Para alinhar ao centro da fatia */
             transform-origin: left center;
-            color: #fff; font-size: 1.4vh; padding-left: 7vh; 
-            text-shadow: 2px 2px 5px #000; font-weight: 900;
-            text-transform: uppercase; white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Empurra o texto para a borda da roleta */
         }
 
-        /* Título Direita */
+        .text-inner {
+            color: #fff; 
+            font-size: 2.2vh; /* TEXTO MAIOR */
+            font-weight: 900;
+            text-transform: uppercase;
+            white-space: nowrap;
+            padding-right: 40px; /* Distância da borda dourada */
+            text-shadow: 2px 2px 4px #000;
+            /* Mantém o texto horizontal em relação ao raio da fatia */
+            transform: translateY(-50%); 
+        }
+
         .side-title {
             color: #fff; font-size: 3.5vw; font-weight: 900; line-height: 1.1;
             text-align: right;
@@ -149,7 +162,12 @@
             const div = document.createElement('div');
             div.className = 'slice-text';
             div.style.transform = `rotate(${i * 40}deg)`;
-            div.innerText = texto;
+            
+            const span = document.createElement('span');
+            span.className = 'text-inner';
+            span.innerText = texto;
+            
+            div.appendChild(span);
             wheel.appendChild(div);
         });
 
