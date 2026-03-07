@@ -3,47 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta Final Sincronizada</title>
+    <title>Cheers O Bar - Roleta Final 100% Sincronizada</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
 
-        * { cursor: none !important; user-select: none; outline: none !important; }
+        * { cursor: none !important; user-select: none; outline: none !important; box-sizing: border-box; }
         html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
 
         #roleta-screen {
             position: absolute; width: 100vw; height: 100vh;
             background: radial-gradient(circle, #1a000a 0%, #000 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 2vh 0;
         }
 
         .main-layout { display: flex; align-items: center; justify-content: center; gap: 5vw; flex: 1; width: 100%; }
         .side-title { color: #fff; font-size: 4vw; font-weight: 900; text-transform: uppercase; line-height: 0.9; text-shadow: 0 0 20px #D4AF37; }
         .side-title span { color: #ff0055; }
 
-        .wheel-box { position: relative; width: 72vh; height: 72vh; }
+        .wheel-box { position: relative; width: 75vh; height: 75vh; }
         
         /* SETA (PONTEIRO) NO TOPO */
         .pointer { 
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 25px solid transparent; 
-            border-right: 25px solid transparent; border-top: 50px solid #fff; z-index: 100;
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 30px solid transparent; 
+            border-right: 30px solid transparent; border-top: 60px solid #fff; z-index: 100;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
         }
 
         .wheel {
-            width: 100%; height: 100%; border-radius: 50%; border: 12px solid #D4AF37;
+            width: 100%; height: 100%; border-radius: 50%; border: 15px solid #D4AF37;
             position: relative; overflow: hidden;
-            transition: transform 6s cubic-bezier(0.15, 0, 0.15, 1);
-            /* GRADIENTE DEFINIDO DE 40 EM 40 GRAUS */
+            transition: transform 7s cubic-bezier(0.1, 0, 0.1, 1);
+            /* Definição rigorosa: 9 fatias de 40 graus cada */
             background: conic-gradient(
-                #D4AF37 0deg 40deg,   /* 0: JACKPOT (Dourado) */
-                #ff0055 40deg 80deg,  /* 1: RÉGUA (Rosa) */
-                #111 80deg 120deg,    /* 2: TENTA (Preto) */
-                #ff0055 120deg 160deg, /* 3: FINO (Rosa) */
-                #111 160deg 200deg,   /* 4: TENTA (Preto) */
-                #ff0055 200deg 240deg, /* 5: FINO (Rosa) */
-                #111 240deg 280deg,   /* 6: TENTA (Preto) */
-                #ff0055 280deg 320deg, /* 7: FINO (Rosa) */
-                #111 320deg 360deg    /* 8: TENTA (Preto) */
+                #D4AF37 0deg 40deg,   /* 0: Jackpot */
+                #ff0055 40deg 80deg,  /* 1: Régua */
+                #111 80deg 120deg,    /* 2: Tenta */
+                #ff0055 120deg 160deg, /* 3: Fino */
+                #111 160deg 200deg,   /* 4: Tenta */
+                #ff0055 200deg 240deg, /* 5: Fino */
+                #111 240deg 280deg,   /* 6: Tenta */
+                #ff0055 280deg 320deg, /* 7: Fino */
+                #111 320deg 360deg    /* 8: Tenta */
             );
         }
 
@@ -53,26 +55,29 @@
         }
 
         .slice-text {
-            color: #fff; font-weight: 900; font-size: 1.8vh; text-transform: uppercase;
-            padding-right: 40px; text-shadow: 2px 2px 5px #000; white-space: nowrap;
+            color: #fff; font-weight: 900; font-size: 1.6vh; text-transform: uppercase;
+            padding-right: 50px; text-shadow: 2px 2px 4px #000; white-space: nowrap;
         }
 
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.98); border: 8px solid #D4AF37; padding: 6vh;
-            border-radius: 30px; color: #fff; font-size: 5vw; font-weight: 900;
-            text-align: center; z-index: 200; transition: transform 0.5s;
+            background: rgba(0,0,0,0.95); border: 10px solid #D4AF37; padding: 7vh;
+            border-radius: 40px; color: #fff; font-size: 5vw; font-weight: 900;
+            text-align: center; z-index: 200; transition: transform 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.4);
+            box-shadow: 0 0 100px rgba(0,0,0,1);
         }
         #resultado.show { transform: translate(-50%, -50%) scale(1); }
 
-        .footer-hint { margin-bottom: 5vh; color: #D4AF37; font-size: 2vw; font-weight: 700; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .footer-hint { margin-bottom: 3vh; color: #D4AF37; font-size: 2vw; font-weight: 700; animation: flash 1s infinite; }
+        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
     <div id="roleta-screen">
-        <div style="margin-top: 5vh; color: #fff; font-size: 2.5vw; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid #ff0055;">CHEERS O BAR</div>
+        <div style="color: #fff; font-size: 2.5vw; font-weight: 900; text-transform: uppercase; border-bottom: 4px solid #ff0055; padding: 0 40px 10px 40px;">
+            CHEERS O BAR
+        </div>
 
         <div class="main-layout">
             <div class="side-title">ROLETA<br><span>DO CHEERS</span></div>
@@ -83,7 +88,7 @@
             <div class="side-title" style="text-align: right;">GANHA<br><span>PRÉMIOS</span></div>
         </div>
 
-        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO DO COMANDO!</div>
+        <div id="hint" class="footer-hint">CARREGA EM QUALQUER BOTÃO PARA GIRAR!</div>
     </div>
 
     <div id="resultado"></div>
@@ -94,27 +99,27 @@
         const hint = document.getElementById('hint');
         
         let aRodar = false;
-        let rotacaoAcumulada = 0;
+        let totalRotation = 0;
 
-        // LISTA DE FATIAS (Mapeamento 1:1 com o conic-gradient acima)
+        // MAPA DE FATIAS (Deve bater 100% com o conic-gradient do CSS)
         const fatias = [
-            { texto: 'JACKPOT: 5 SHOTS!', perde: false }, // 0: Dourado
-            { texto: 'OFERTA 1 RÉGUA', perde: false },     // 1: Rosa
-            { texto: 'TENTA OUTRA VEZ', perde: true },    // 2: Preto
-            { texto: 'OFERTA 1 FINO', perde: false },      // 3: Rosa
-            { texto: 'TENTA OUTRA VEZ', perde: true },    // 4: Preto
-            { texto: 'OFERTA 1 FINO', perde: false },      // 5: Rosa
-            { texto: 'TENTA OUTRA VEZ', perde: true },    // 6: Preto
-            { texto: 'OFERTA 1 FINO', perde: false },      // 7: Rosa
-            { texto: 'TENTA OUTRA VEZ', perde: true }     // 8: Preto
+            { texto: 'JACKPOT: 5 SHOTS!', perde: false }, // Fatia 0 (Dourada)
+            { texto: 'OFERTA 1 RÉGUA', perde: false },     // Fatia 1 (Rosa)
+            { texto: 'TENTA OUTRA VEZ', perde: true },    // Fatia 2 (Preta)
+            { texto: 'OFERTA 1 FINO', perde: false },      // Fatia 3 (Rosa)
+            { texto: 'TENTA OUTRA VEZ', perde: true },    // Fatia 4 (Preta)
+            { texto: 'OFERTA 1 FINO', perde: false },      // Fatia 5 (Rosa)
+            { texto: 'TENTA OUTRA VEZ', perde: true },    // Fatia 6 (Preta)
+            { texto: 'OFERTA 1 FINO', perde: false },      // Fatia 7 (Rosa)
+            { texto: 'TENTA OUTRA VEZ', perde: true }     // Fatia 8 (Preta)
         ];
 
-        // Posicionar textos exatamente no centro de cada fatia de 40 graus
+        // Posicionar textos
         fatias.forEach((f, i) => {
             const container = document.createElement('div');
             container.className = 'slice-text-container';
-            const anguloTexto = (i * 40) + 20; 
-            container.style.transform = `rotate(${anguloTexto}deg)`;
+            // Rodamos o texto para o centro de cada fatia de 40 graus
+            container.style.transform = `rotate(${(i * 40) + 20}deg)`;
             const span = document.createElement('span');
             span.className = 'slice-text';
             span.innerText = f.texto;
@@ -124,7 +129,9 @@
 
         function girar() {
             if (aRodar) {
-                if (resultado.classList.contains('show')) resultado.classList.remove('show');
+                if (resultado.classList.contains('show')) {
+                    resultado.classList.remove('show');
+                }
                 return;
             }
 
@@ -132,47 +139,48 @@
             resultado.classList.remove('show');
             hint.style.visibility = 'hidden';
 
-            // 1. SORTEIO COM PROBABILIDADE CORRIGIDA
+            // 1. SORTEIO (Jackpot em 10%)
             const sorte = Math.random() * 100;
             let index;
-
-            if (sorte < 10) index = 0;              // JACKPOT 10% (Fatia 0)
-            else if (sorte < 30) index = 1;         // RÉGUA 20% (Fatia 1)
-            else if (sorte < 65) index = [3, 5, 7][Math.floor(Math.random() * 3)]; // FINOS 35% (Fatias 3, 5, 7)
-            else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)]; // TENTA 35% (Fatias 2, 4, 6, 8)
+            if (sorte < 10) index = 0;              // 10% Jackpot
+            else if (sorte < 30) index = 1;         // 20% Régua
+            else if (sorte < 65) index = [3, 5, 7][Math.floor(Math.random() * 3)]; // 35% Finos
+            else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)]; // 35% Tenta
 
             const ganhador = fatias[index];
 
-            // 2. MATEMÁTICA DE PRECISÃO PARA SINCRONIA
-            // A roleta roda no sentido horário. Para o prémio X parar no topo (0deg),
-            // a roda deve girar 360 - centro_da_fatia.
-            const centroFatia = (index * 40) + 20;
-            const anguloDestino = 360 - centroFatia;
+            // 2. MATEMÁTICA DE PARAGEM (SINCRONIZAÇÃO ABSOLUTA)
+            // O centro da fatia escolhida é (index * 40) + 20.
+            // Para trazer esse centro para o TOPO (0 graus), rodamos 360 - centro.
+            const targetDegrees = 360 - ((index * 40) + 20);
             
-            // Adicionamos 12 voltas para impacto visual e compensamos a rotação anterior
-            const voltasExtras = 12 * 360;
-            const ajusteParaZero = 360 - (rotacaoAcumulada % 360);
+            // Damos pelo menos 10 voltas completas para o espetáculo
+            const extraSpins = 10 * 360;
             
-            rotacaoAcumulada += ajusteParaZero + voltasExtras + anguloDestino;
-            wheel.style.transform = `rotate(${rotacaoAcumulada}deg)`;
+            // Somamos à rotação atual para a roda nunca "voltar atrás"
+            // O modulo garante que sabemos onde a roda parou na última vez
+            const currentModulo = totalRotation % 360;
+            totalRotation += (360 - currentModulo) + extraSpins + targetDegrees;
 
-            // 3. EXIBIÇÃO DO RESULTADO FINAL
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+
+            // 3. ANÚNCIO DO RESULTADO
             setTimeout(() => {
                 aRodar = false;
-                const corStatus = ganhador.perde ? "#ff0055" : "#D4AF37";
-                const titulo = ganhador.perde ? "PERDESTE:" : "GANHASTE:";
+                const cor = ganhador.perde ? "#ff0055" : "#D4AF37";
+                const prefixo = ganhador.perde ? "PERDESTE" : "GANHASTE";
                 
                 resultado.innerHTML = `
-                    <span style="color: ${corStatus}; text-shadow: 0 0 15px ${corStatus};">${titulo}</span><br>
+                    <span style="color:${cor}; text-shadow: 0 0 20px ${cor};">${prefixo}:</span><br>
                     ${ganhador.texto}<br>
-                    <span style="font-size: 1.8vw; color: #888; text-transform: none; font-weight: 400;">Prime o comando para continuar</span>
+                    <span style="font-size: 1.5vw; color: #666; font-weight: 400; text-transform: none;">Carrega para continuar</span>
                 `;
                 resultado.classList.add('show');
                 hint.style.visibility = 'visible';
-            }, 6200);
+            }, 7200); // 7 segundos de suspense
         }
 
-        // EVENTOS PARA TV HISENSE (QUALQUER TECLA OU CLIQUE)
+        // CONTROLO PELO COMANDO DA TV
         window.addEventListener('keydown', (e) => { e.preventDefault(); girar(); });
         document.addEventListener('mousedown', (e) => { e.preventDefault(); girar(); });
     </script>
