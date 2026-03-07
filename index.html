@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta Sincronizada 100%</title>
+    <title>Cheers O Bar - Roleta Oficial</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
 
@@ -22,7 +22,7 @@
 
         .wheel-box { position: relative; width: 72vh; height: 72vh; }
         
-        /* SETA (PONTEIRO) NO TOPO */
+        /* SETA (PONTEIRO) - FIXO NO TOPO (0 GRAUS) */
         .pointer { 
             position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; border-left: 25px solid transparent; 
@@ -32,13 +32,18 @@
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; border: 12px solid #D4AF37;
             position: relative; overflow: hidden;
-            transition: transform 6s cubic-bezier(0.15, 0, 0.15, 1); /* Animação suave e longa */
+            transition: transform 6s cubic-bezier(0.15, 0, 0.15, 1);
+            /* Mapeamento exato de cores: Jackpot(0-40), Régua(40-80), etc. */
             background: conic-gradient(
-                #111 0deg 40deg,    #ff0055 40deg 80deg,
-                #111 80deg 120deg,  #ff0055 120deg 160deg,
-                #111 160deg 200deg, #ff0055 200deg 240deg,
-                #111 240deg 280deg, #ff0055 280deg 320deg,
-                #D4AF37 320deg 360deg
+                #D4AF37 0deg 40deg,   /* Fatia 0: JACKPOT */
+                #ff0055 40deg 80deg,  /* Fatia 1: RÉGUA */
+                #111 80deg 120deg,    /* Fatia 2: TENTA */
+                #ff0055 120deg 160deg, /* Fatia 3: FINO */
+                #111 160deg 200deg,   /* Fatia 4: TENTA */
+                #ff0055 200deg 240deg, /* Fatia 5: FINO */
+                #111 240deg 280deg,   /* Fatia 6: TENTA */
+                #ff0055 280deg 320deg, /* Fatia 7: FINO */
+                #111 320deg 360deg    /* Fatia 8: TENTA */
             );
         }
 
@@ -52,6 +57,7 @@
             padding-right: 40px; text-shadow: 2px 2px 5px #000; white-space: nowrap;
         }
 
+        /* RESULTADO POPUP */
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
             background: rgba(0,0,0,0.98); border: 8px solid #D4AF37; padding: 6vh;
@@ -91,24 +97,25 @@
         let aRodar = false;
         let rotacaoAcumulada = 0;
 
-        // Lista de fatias exata do CSS (0 a 360 graus)
+        // Fatias alinhadas com o background conic-gradient
         const fatias = [
-            { id: 0, texto: 'TENTA OUTRA VEZ' }, 
-            { id: 1, texto: 'OFERTA 1 FINO' },     
-            { id: 2, texto: 'TENTA OUTRA VEZ' }, 
-            { id: 3, texto: 'OFERTA 1 FINO' },     
-            { id: 4, texto: 'TENTA OUTRA VEZ' }, 
-            { id: 5, texto: 'OFERTA 1 FINO' },     
-            { id: 6, texto: 'TENTA OUTRA VEZ' }, 
-            { id: 7, texto: 'OFERTA 1 RÉGUA' },    
-            { id: 8, texto: 'JACKPOT: 5 SHOTS!' }  
+            { texto: 'JACKPOT: 5 SHOTS!', perde: false }, // 0: Dourado
+            { texto: 'OFERTA 1 RÉGUA', perde: false },     // 1: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true },    // 2: Preto
+            { texto: 'OFERTA 1 FINO', perde: false },      // 3: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true },    // 4: Preto
+            { texto: 'OFERTA 1 FINO', perde: false },      // 5: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true },    // 6: Preto
+            { texto: 'OFERTA 1 FINO', perde: false },      // 7: Rosa
+            { texto: 'TENTA OUTRA VEZ', perde: true }     // 8: Preto
         ];
 
-        // Criar textos nas fatias
+        // Gerar os textos no local exato de cada fatia
         fatias.forEach((f, i) => {
             const container = document.createElement('div');
             container.className = 'slice-text-container';
-            const anguloTexto = (i * 40) + 20; // Centro da fatia
+            // Rodamos o container para o centro da fatia (ex: 0-40deg -> centro em 20deg)
+            const anguloTexto = (i * 40) + 20; 
             container.style.transform = `rotate(${anguloTexto}deg)`;
             const span = document.createElement('span');
             span.className = 'slice-text';
@@ -127,41 +134,42 @@
             resultado.classList.remove('show');
             hint.style.visibility = 'hidden';
 
-            // 1. SORTEIO REAL (Lógica de probabilidade)
+            // 1. SORTEIO MATEMÁTICO (Probabilidade)
             const sorte = Math.random() * 100;
-            let indexGanhador;
-            if (sorte < 5) indexGanhador = 8;        // 5% Jackpot
-            else if (sorte < 25) indexGanhador = 7;   // 20% Régua
-            else if (sorte < 60) indexGanhador = [1, 3, 5][Math.floor(Math.random() * 3)]; // 35% Finos
-            else indexGanhador = [0, 2, 4, 6][Math.floor(Math.random() * 4)]; // 40% Tenta outra vez
+            let index;
+            if (sorte < 5) index = 0;              // Jackpot (5%)
+            else if (sorte < 25) index = 1;         // Régua (20%)
+            else if (sorte < 60) index = [3, 5, 7][Math.floor(Math.random() * 3)]; // Finos (35%)
+            else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)]; // Tenta (40%)
 
-            const ganhador = fatias[indexGanhador];
+            const ganhador = fatias[index];
 
-            // 2. MATEMÁTICA DE SINCRONIZAÇÃO
-            // Cada fatia tem 40 graus. O centro da fatia i é (i * 40) + 20.
-            // Para parar no topo (0 graus), a roda deve rodar 360 - centro_da_fatia.
-            const anguloAlvo = 360 - ((indexGanhador * 40) + 20);
+            // 2. CÁLCULO DE ROTAÇÃO (Sincronia Total)
+            // Para a fatia i ficar no topo (0 graus), a roda deve rodar 360 - centro_da_fatia
+            const centroFatia = (index * 40) + 20;
+            const anguloDeParagem = 360 - centroFatia;
             
-            // Garantir rotação longa (mínimo 12 voltas extras)
-            const voltasExtras = 12 * 360; 
+            // Garantir 12 voltas completas e adicionar o ângulo do prémio
+            // Usamos o módulo para garantir que somamos a partir do "ponto zero" atual
+            const voltasExtras = 12 * 360;
+            const ajusteParaZero = 360 - (rotacaoAcumulada % 360);
             
-            // Cálculo da rotação final acumulada para evitar girar pouco ou para trás
-            // Resetamos a base da rotação para a volta atual e somamos o destino
-            const voltaAtual = Math.ceil(rotacaoAcumulada / 360);
-            rotacaoAcumulada = (voltaAtual * 360) + voltasExtras + anguloAlvo;
-
+            rotacaoAcumulada += ajusteParaZero + voltasExtras + anguloDeParagem;
             wheel.style.transform = `rotate(${rotacaoAcumulada}deg)`;
 
-            // 3. EXIBIÇÃO DO RESULTADO
+            // 3. RESULTADO COM "PERDESTE" OU "GANHASTE"
             setTimeout(() => {
                 aRodar = false;
-                resultado.innerHTML = "GANHASTE:<br>" + ganhador.texto + "<br><span style='font-size:1.8vw; color:#888; text-transform: none;'>Qualquer tecla para continuar</span>";
+                const status = ganhador.perde ? 
+                    "<span style='color: #ff0055;'>PERDESTE:</span>" : 
+                    "<span style='color: #D4AF37;'>GANHASTE:</span>";
+                
+                resultado.innerHTML = `${status}<br>${ganhador.texto}<br><span style='font-size:1.8vw; color:#888; text-transform: none;'>Qualquer tecla para continuar</span>`;
                 resultado.classList.add('show');
                 hint.style.visibility = 'visible';
-            }, 6500); // Aguarda a animação de 6s terminar
+            }, 6200);
         }
 
-        // LIGAR O COMANDO DA TV
         window.addEventListener('keydown', (e) => { e.preventDefault(); girar(); });
         document.addEventListener('mousedown', (e) => { e.preventDefault(); girar(); });
     </script>
