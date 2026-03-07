@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta Final Fixa</title>
+    <title>Cheers O Bar - Versão Infalível</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
-
         * { cursor: none !important; user-select: none; box-sizing: border-box; }
-        body { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; justify-content: center; }
-
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #roleta-screen { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a000a 0%, #000 100%); }
-
-        .wheel-box { position: relative; width: 75vh; height: 75vh; }
         
-        /* SETA - O PONTO ZERO ABSOLUTO */
+        .wheel-box { position: relative; width: 80vh; height: 80vh; }
         .pointer { 
             position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; border-left: 25px solid transparent; 
@@ -24,8 +20,8 @@
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; border: 12px solid #D4AF37;
             position: relative; overflow: hidden;
-            transition: transform 5s cubic-bezier(0.15, 0, 0.05, 1);
-            /* O segredo: o gradiente começa exatamente no topo (0deg) */
+            transition: transform 6s cubic-bezier(0.1, 0, 0.1, 1);
+            /* O gradiente começa exatamente no topo e roda para a direita */
             background: conic-gradient(
                 from -20deg,
                 #D4AF37 0deg 40deg,    /* 0: Jackpot */
@@ -40,12 +36,10 @@
             );
         }
 
-        .slice-text-container {
-            position: absolute; top: 50%; left: 50%; width: 50%; height: 2px;
-            transform-origin: left center; display: flex; align-items: center; justify-content: flex-end;
+        .slice-text {
+            position: absolute; top: 50%; left: 50%; width: 50%; transform-origin: left center;
+            color: #fff; font-size: 1.8vh; padding-left: 15vh; text-shadow: 2px 2px 4px #000;
         }
-
-        .slice-text { color: #fff; font-size: 1.8vh; padding-right: 40px; text-shadow: 2px 2px 4px #000; text-transform: uppercase; }
 
         #resultado {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
@@ -63,71 +57,69 @@
             <div id="wheel" class="wheel"></div>
         </div>
     </div>
-
     <div id="resultado"></div>
 
     <script>
         const wheel = document.getElementById('wheel');
         const resultado = document.getElementById('resultado');
-        
         let aRodar = false;
-        let voltasBase = 0;
+        let rotacaoTotal = 0;
 
-        const fatias = [
-            { txt: 'JACKPOT: 5 SHOTS!', win: true },  // 0
-            { txt: 'OFERTA 1 RÉGUA', win: true },     // 1
-            { txt: 'TENTA OUTRA VEZ', win: false },   // 2
-            { txt: 'OFERTA 1 FINO', win: true },      // 3
-            { txt: 'TENTA OUTRA VEZ', win: false },   // 4
-            { txt: 'OFERTA 1 FINO', win: true },      // 5
-            { txt: 'TENTA OUTRA VEZ', win: false },   // 6
-            { txt: 'OFERTA 1 FINO', win: true },      // 7
-            { txt: 'TENTA OUTRA VEZ', win: false }    // 8
+        // Lista rigorosa de 9 fatias (40 graus cada)
+        const premios = [
+            { txt: 'JACKPOT: 5 SHOTS!', win: true },  // 0 a 40 deg
+            { txt: 'OFERTA 1 RÉGUA', win: true },     // 40 a 80 deg
+            { txt: 'TENTA OUTRA VEZ', win: false },   // 80 a 120 deg
+            { txt: 'OFERTA 1 FINO', win: true },      // 120 a 160 deg
+            { txt: 'TENTA OUTRA VEZ', win: false },   // 160 a 200 deg
+            { txt: 'OFERTA 1 FINO', win: true },      // 200 a 240 deg
+            { txt: 'TENTA OUTRA VEZ', win: false },   // 240 a 280 deg
+            { txt: 'OFERTA 1 FINO', win: true },      // 280 a 320 deg
+            { txt: 'TENTA OUTRA VEZ', win: false }    // 320 a 360 deg
         ];
 
-        // Criar textos alinhados
-        fatias.forEach((f, i) => {
+        // Adicionar os textos visualmente
+        premios.forEach((p, i) => {
             const div = document.createElement('div');
-            div.className = 'slice-text-container';
+            div.className = 'slice-text';
             div.style.transform = `rotate(${i * 40}deg)`;
-            div.innerHTML = `<span class="slice-text">${f.txt}</span>`;
+            div.innerText = p.txt;
             wheel.appendChild(div);
         });
 
         function girar() {
-            if (aRodar) {
-                resultado.classList.remove('show');
-                return;
-            }
-
+            if (aRodar) { resultado.classList.remove('show'); return; }
+            
             aRodar = true;
             resultado.classList.remove('show');
 
-            // 1. SORTEIO (Jackpot 10%, Régua 20%, Finos 35%, Tenta 35%)
+            // 1. SORTEIO DE PROBABILIDADE (Jackpot 10%)
             const r = Math.random() * 100;
-            let idx;
-            if (r < 10) idx = 0;
-            else if (r < 30) idx = 1;
-            else if (r < 65) idx = [3, 5, 7][Math.floor(Math.random() * 3)];
-            else idx = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
+            let fatiaAlvo;
+            if (r < 10) fatiaAlvo = 0; 
+            else if (r < 30) fatiaAlvo = 1;
+            else if (r < 65) fatiaAlvo = [3, 5, 7][Math.floor(Math.random() * 3)];
+            else fatiaAlvo = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
 
-            // 2. ROTAÇÃO FIXA (Sem erros acumulados)
-            voltasBase += 10; 
-            // O cálculo -(idx * 40) alinha a fatia sorteada com o topo
-            const finalDeg = (voltasBase * 360) - (idx * 40);
-            
-            wheel.style.transform = `rotate(${finalDeg}deg)`;
+            // 2. CÁLCULO DE ROTAÇÃO (Para parar no centro da fatia sorteada)
+            const voltasExtras = 8 * 360; 
+            // O segredo está aqui: subtraímos o ângulo da fatia para ela vir para o topo
+            const anguloFatia = fatiaAlvo * 40;
+            const novaRotacao = voltasExtras + (360 - (rotacaoTotal % 360)) + (360 - anguloFatia);
+            rotacaoTotal += novaRotacao;
 
-            // 3. RESULTADO (Apenas o que a seta aponta)
+            wheel.style.transform = `rotate(${rotacaoTotal}deg)`;
+
+            // 3. EXIBIÇÃO DO RESULTADO
             setTimeout(() => {
-                const ganhou = fatias[idx];
-                const cor = ganhou.win ? "#D4AF37" : "#ff0055";
-                const label = ganhou.win ? "GANHASTE:" : "PERDESTE:";
+                const prêmioFinal = premios[fatiaAlvo];
+                const cor = prêmioFinal.win ? "#D4AF37" : "#ff0055";
+                const titulo = prêmioFinal.win ? "GANHASTE:" : "PERDESTE:";
                 
-                resultado.innerHTML = `<b style="color:${cor}">${label}</b><br>${ganhou.txt}`;
+                resultado.innerHTML = `<b style="color:${cor}">${titulo}</b><br>${prêmioFinal.txt}`;
                 resultado.classList.add('show');
                 aRodar = false;
-            }, 5200);
+            }, 6100);
         }
 
         window.addEventListener('keydown', girar);
