@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cheers O Bar - Roleta 100% Sincronizada</title>
+    <title>Cheers O Bar - Roleta Visual</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
         * { cursor: none !important; user-select: none; box-sizing: border-box; outline: none; }
@@ -11,20 +11,20 @@
         
         #roleta-screen { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a000a 0%, #000 100%); }
         
-        .wheel-box { position: relative; width: 80vh; height: 80vh; }
+        .wheel-box { position: relative; width: 85vh; height: 85vh; }
         
-        /* A SETA - Ponto fixo de verdade */
+        /* SETA - O ÚNICO INDICADOR REAL */
         .pointer { 
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 30px solid transparent; 
-            border-right: 30px solid transparent; border-top: 60px solid #fff; z-index: 100;
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 35px solid transparent; 
+            border-right: 35px solid transparent; border-top: 70px solid #fff; z-index: 100;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
         }
 
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; border: 15px solid #D4AF37;
             position: relative; overflow: hidden;
-            transition: transform 5s cubic-bezier(0.15, 0, 0, 1);
-            /* Alinhamento exato com a lista de fatias */
+            transition: transform 6s cubic-bezier(0.15, 0, 0, 1);
             background: conic-gradient(
                 from -20deg,
                 #D4AF37 0deg 40deg,    /* 0: Jackpot */
@@ -41,17 +41,9 @@
 
         .slice-text {
             position: absolute; top: 50%; left: 50%; width: 50%; transform-origin: left center;
-            color: #fff; font-size: 1.8vh; padding-left: 12vh; text-shadow: 2px 2px 4px #000; font-weight: 900;
+            color: #fff; font-size: 2vh; padding-left: 10vh; text-shadow: 2px 2px 5px #000; font-weight: 900;
             text-transform: uppercase;
         }
-
-        #resultado {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.98); border: 10px solid #D4AF37; padding: 60px;
-            border-radius: 40px; color: #fff; font-size: 5vw; text-align: center; z-index: 200; transition: transform 0.4s;
-            box-shadow: 0 0 100px #000;
-        }
-        #resultado.show { transform: translate(-50%, -50%) scale(1); }
     </style>
 </head>
 <body>
@@ -62,45 +54,38 @@
             <div id="wheel" class="wheel"></div>
         </div>
     </div>
-    <div id="resultado"></div>
 
     <script>
         const wheel = document.getElementById('wheel');
-        const resultado = document.getElementById('resultado');
         let aRodar = false;
 
-        // ESTA LISTA É A LEI: O Index 1 É A RÉGUA, O Index 3 É O FINO.
         const fatias = [
-            { t: 'JACKPOT: 5 SHOTS!', w: true },  // 0 (Dourado)
-            { t: 'OFERTA 1 RÉGUA', w: true },     // 1 (Rosa)
-            { t: 'TENTA OUTRA VEZ', w: false },   // 2 (Preto)
-            { t: 'OFERTA 1 FINO', w: true },      // 3 (Rosa)
-            { t: 'TENTA OUTRA VEZ', w: false },   // 4 (Preto)
-            { t: 'OFERTA 1 FINO', w: true },      // 5 (Rosa)
-            { t: 'TENTA OUTRA VEZ', w: false },   // 6 (Preto)
-            { t: 'OFERTA 1 FINO', w: true },      // 7 (Rosa)
-            { t: 'TENTA OUTRA VEZ', w: false }    // 8 (Preto)
+            'JACKPOT: 5 SHOTS!', // 0
+            'OFERTA 1 RÉGUA',    // 1
+            'TENTA OUTRA VEZ',   // 2
+            'OFERTA 1 FINO',     // 3
+            'TENTA OUTRA VEZ',   // 4
+            'OFERTA 1 FINO',     // 5
+            'TENTA OUTRA VEZ',   // 6
+            'OFERTA 1 FINO',     // 7
+            'TENTA OUTRA VEZ'    // 8
         ];
 
-        // Criar textos - Alinhamento absoluto
-        fatias.forEach((f, i) => {
+        // Criar textos nas fatias
+        fatias.forEach((texto, i) => {
             const div = document.createElement('div');
             div.className = 'slice-text';
             div.style.transform = `rotate(${i * 40}deg)`;
-            div.innerText = f.t;
+            div.innerText = texto;
             wheel.appendChild(div);
         });
 
         function girar() {
-            if (aRodar) {
-                resultado.classList.remove('show');
-                return;
-            }
+            if (aRodar) return;
             
             aRodar = true;
-            resultado.classList.remove('show');
 
-            // 1. SORTEIO (Jackpot 10%, Régua 20%)
+            // 1. SORTEIO (Jackpot 10%, Régua 20%, Resto dividido)
             const r = Math.random() * 100;
             let index;
             if (r < 10) index = 0; 
@@ -108,29 +93,23 @@
             else if (r < 65) index = [3, 5, 7][Math.floor(Math.random() * 3)];
             else index = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
 
-            // 2. RESET INSTANTÂNEO PARA O PONTO ZERO
+            // 2. RESET PARA O PONTO ZERO (Invisível)
             wheel.style.transition = 'none';
             wheel.style.transform = 'rotate(0deg)';
-            void wheel.offsetWidth; // Força o reset
+            void wheel.offsetWidth; 
 
-            // 3. CÁLCULO DA ROTAÇÃO (Sentido anti-horário para alinhar com o conic-gradient)
-            // Para a fatia [index] ficar no topo, rodamos -(index * 40)
+            // 3. GIRAR
+            // (10 voltas completas) + (ângulo para alinhar a fatia sorteada com a seta)
             const voltas = 10 * 360;
-            const destinoFinal = voltas - (index * 40);
+            const anguloFinal = voltas + (360 - (index * 40));
             
-            wheel.style.transition = 'transform 5s cubic-bezier(0.15, 0, 0, 1)';
-            wheel.style.transform = `rotate(${destinoFinal}deg)`;
+            wheel.style.transition = 'transform 6s cubic-bezier(0.15, 0, 0, 1)';
+            wheel.style.transform = `rotate(${anguloFinal}deg)`;
 
-            // 4. RESULTADO (Puxa exatamente o texto do index sorteado)
+            // 4. LIBERAR PARA NOVA JOGADA
             setTimeout(() => {
-                const ganhou = fatias[index];
-                const cor = ganhou.w ? "#D4AF37" : "#ff0055";
-                const label = ganhou.w ? "GANHASTE:" : "PERDESTE:";
-                
-                resultado.innerHTML = `<b style="color:${cor}">${label}</b><br>${ganhou.t}`;
-                resultado.classList.add('show');
                 aRodar = false;
-            }, 5200);
+            }, 6500);
         }
 
         window.addEventListener('keydown', girar);
